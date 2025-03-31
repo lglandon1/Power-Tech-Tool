@@ -52,6 +52,17 @@
             --back-button-background: #576574;
         }
         
+        /* Ensure splash heading is bright in dark mode */
+        [data-theme="dark"] .splash-heading {
+            color: var(--text-color);
+        }
+        
+        /* New rule for section headers in dark mode for better contrast */
+        [data-theme="dark"] .section-header {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -92,6 +103,11 @@
             margin-top: 0;
             font-size: 20px;
             color: var(--primary-color);
+        }
+        
+        /* Override h2 color within section headers in light mode */
+        .section-header h2 {
+            color: white;
         }
         
         .subtitle {
@@ -345,7 +361,8 @@
                 </button>
             </div>
             
-            <h2>Kuwait to US Conversions</h2>
+            <!-- Updated heading with splash-heading class -->
+            <h2 class="splash-heading">Kuwait to US Conversions</h2>
             <div class="conversion-list">
                 <p>Common Conversions:</p>
                 <ul>
