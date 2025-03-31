@@ -1,4 +1,3 @@
-# Power-Tech-Tool
 # Power Tech Tool
 
 A web-based utility for electrical, mechanical, and conversion calculations commonly used in power engineering applications. This tool provides conversions between Kuwait and US units, offering a convenient solution for engineers and technicians working across international standards.
