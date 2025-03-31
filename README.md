@@ -1,92 +1,94 @@
-# Power Tech Tool (https://github.com/lglandon1/Power-Tech-Tool/blob/main/Light%20Icon.png)
+# Power Tech Tool <img src="https://github.com/lglandon1/Power-Tech-Tool/blob/main/Light%20Icon.png" alt="Tool Icon" width="30" height="30">
 
 A web-based utility for electrical, mechanical, and conversion calculations commonly used in power engineering applications. This tool provides conversions between Kuwait and US units, offering a convenient solution for engineers and technicians working across international standards.
 
-![Power Tech Tool Screenshot](https://github.com/lglandon1/Power-Tech-Tool/blob/main/Screenshot%202025-03-31%201.png)
-![Power Tech Tool Screenshot](https://github.com/lglandon1/Power-Tech-Tool/blob/main/Screenshot%202025-03-31%202.png)
+## 📱 Screenshots
+
+<p align="center">
+  <img src="https://github.com/lglandon1/Power-Tech-Tool/blob/main/Screenshot%202025-03-31%201.png" alt="Main Menu" width="45%">
+  &nbsp; &nbsp;
+  <img src="https://github.com/lglandon1/Power-Tech-Tool/blob/main/Screenshot%202025-03-31%202.png" alt="Calculator Screen" width="45%">
+</p>
 
 ## 🔧 Features
 
-The Power Tech Tool provides the following calculations:
+The Power Tech Tool offers multiple engineering calculations in one convenient interface:
 
-### Power Calculations
-- **Single Phase Power**: Calculate kW from voltage, current, and power factor
-- **Three Phase Power**: Calculate kW using three-phase measurements
-- **kVA to kW Conversion**: Convert between apparent and real power
-- **Power Factor Correction**: Calculate new power factor after correction
-
-### Electrical Calculations
-- **Voltage Drop**: Calculate voltage drop percentage based on conductor properties
-
-### Mechanical Calculations
-- **Fuel Consumption**: Estimate fuel consumption rates for power generation
-
-### Unit Conversions
-- **Liters to Gallons**: Convert between metric and US volume units
-- **Celsius to Fahrenheit**: Convert between temperature scales
+<table>
+  <tr>
+    <td><b>Power</b></td>
+    <td>
+      • Single Phase Power <br>
+      • Three Phase Power <br>
+      • kVA to kW Conversion <br>
+      • Power Factor Correction
+    </td>
+  </tr>
+  <tr>
+    <td><b>Electrical</b></td>
+    <td>• Voltage Drop calculations based on conductor properties</td>
+  </tr>
+  <tr>
+    <td><b>Mechanical</b></td>
+    <td>• Fuel Consumption estimations for power generation</td>
+  </tr>
+  <tr>
+    <td><b>Conversions</b></td>
+    <td>
+      • Liters to Gallons <br>
+      • Celsius to Fahrenheit
+    </td>
+  </tr>
+</table>
 
 ## 🚀 Getting Started
 
-### Option 1: Use the Live Version
-Access the tool directly through GitHub Pages:
-[Power Tech Tool - Live Version](https://lglandon1.github.io/Power-Tech-Tool/)
+### [▶️ Use the Live Version](https://lglandon1.github.io/Power-Tech-Tool/)
 
-### Option 2: Run Locally
-1. Clone this repository:
-```
+### Run Locally
+```bash
+# Clone the repository
 git clone https://github.com/lglandon1/Power-Tech-Tool.git
+
+# Open index.html in your browser
 ```
-2. Open the `index.html` file in any modern web browser
 
-## 📱 Mobile-Friendly
+## 💡 How to Use
 
-The Power Tech Tool is fully responsive and designed to work seamlessly on smartphones and tablets. Key mobile features include:
-- Optimized layout for small screens
-- Easy input with number fields
-- Enter key navigation for quick use
+1. Select a calculation type from the main menu
+2. Enter your values in the form fields
+3. Press Enter or click "Calculate"
+4. View your results instantly
 
-## 📊 Using the Tool
+### Quick Example: Single Phase Power
 
-1. **Select Calculation Type**: Choose the calculation you need from the main menu
-2. **Enter Values**: Fill in the required fields
-3. **Get Results**: Press Enter on the last field or click "Calculate"
-4. **View and Share Results**: Results are displayed on screen
+```
+Voltage: 400V
+Current: 10A
+Power Factor: 0.85
+→ Result: 3.4 kW (4.6 hp)
+```
 
-### Example: Single Phase Power Calculation
-1. Enter voltage (V)
-2. Enter current (A)
-3. Enter power factor (default: 0.85)
-4. View result in kW and HP
+## ⚙️ Default Values
 
-## 🔄 Default Values
+| Parameter | Default | Standard |
+|-----------|---------|----------|
+| Voltage | 400V | Kuwait |
+| Power Factor | 0.85 | Typical |
+| Efficiency | 0.3 | For fuel consumption |
 
-The tool comes with standard default values for common parameters:
-- Default Voltage: 400V (Kuwait standard)
-- Default Power Factor: 0.85
-- Default Efficiency: 0.3 (for fuel consumption)
-
-## 🧩 Technical Details
-
-This project is built using:
-- HTML5
-- CSS3 with responsive design
-- Vanilla JavaScript
-
-The application runs entirely in the browser with no server-side dependencies, making it fast and reliable even in areas with limited connectivity.
-
-## 📜 Background
-
-This tool was developed to simplify common power engineering calculations, with a specific focus on conversions between Kuwait standards and US/Imperial units. It's based on standard engineering formulas and includes built-in validation to ensure accurate results.
-
-## 🔄 Common Conversions
+## 📊 Common Conversions
 
 - 1 meter = 3.28 feet
 - 1 liter = 0.26 US gallons
 - 1 kW = 1.34 horsepower
 
-## 🤝 Contributing
+## 💻 Technical Details
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+- **Platform**: Web (HTML5, CSS3, JavaScript)
+- **Dependencies**: None (runs entirely in browser)
+- **Compatibility**: All modern browsers and mobile devices
+- **Special Features**: Enter key navigation, responsive design
 
 ## 📄 License
 
@@ -94,8 +96,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📧 Contact
 
-If you have any questions or feedback, please open an issue in this repository.
+If you have any questions or feedback, please [open an issue](https://github.com/lglandon1/Power-Tech-Tool/issues) in this repository.
 
 ---
 
-Developed by [Your Name/Organization]
+<p align="center">
+  <i>Developed for engineers and technicians working with international power standards</i>
+</p>
