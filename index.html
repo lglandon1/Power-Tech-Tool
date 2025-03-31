@@ -218,8 +218,13 @@
     <div id="splash" class="container">
         <div class="card splash">
             <header>
-                <h1>POWER TECH TOOL</h1>
-                <p class="subtitle">IMPERIAL UNITS</p>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <img src="https://github.com/lglandon1/Power-Tech-Tool/raw/main/Light%20Icon%20No%20Background.png" alt="Power Tech Tool Icon" style="height: 40px; margin-right: 15px;">
+                    <div>
+                        <h1>POWER TECH TOOL</h1>
+                        <p class="subtitle">IMPERIAL UNITS</p>
+                    </div>
+                </div>
             </header>
             <h2>Kuwait to US Conversions</h2>
             <div class="conversion-list">
@@ -238,8 +243,13 @@
     <div id="main-menu" class="container hidden">
         <div class="card">
             <header>
-                <h1>POWER TECH TOOL</h1>
-                <p class="subtitle">IMPERIAL UNITS</p>
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <img src="https://github.com/lglandon1/Power-Tech-Tool/raw/main/Light%20Icon%20No%20Background.png" alt="Power Tech Tool Icon" style="height: 40px; margin-right: 15px;">
+                    <div>
+                        <h1>POWER TECH TOOL</h1>
+                        <p class="subtitle">IMPERIAL UNITS</p>
+                    </div>
+                </div>
             </header>
             <div class="menu">
                 <button class="menu-item" data-form="single-phase">Single Phase Power</button>
@@ -509,6 +519,18 @@
         const DEFAULT_PF = 0.85;      // Typical power factor
         const DEFAULT_EFF = 0.3;      // Default efficiency for fuel consumption
         
+        // Store input field sequences for each form to handle Enter key navigation
+        const inputSequences = {
+            'single-phase': ['sp-voltage', 'sp-current', 'sp-pf'],
+            'three-phase': ['tp-voltage', 'tp-current1', 'tp-current2', 'tp-current3', 'tp-pf'],
+            'liters-gallons': ['liters'],
+            'celsius-fahrenheit': ['celsius'],
+            'voltage-drop': ['vd-voltage', 'vd-current', 'vd-length', 'vd-size-mm2'],
+            'kva-kw': ['kva', 'kva-pf'],
+            'fuel-consumption': ['fc-power', 'fc-efficiency'],
+            'pf-correction': ['kvar', 'pf-kw']
+        };
+        
         // AWG to mm² conversion
         const awgSizes = {
             "14": 2.1, 
@@ -676,6 +698,36 @@
                 } else {
                     powerLabel.textContent = 'Power (HP):';
                 }
+            });
+        });
+        
+        // Add event listeners for Enter key navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up Enter key handling for all input fields
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        
+                        // Find which form we're in
+                        const currentForm = this.closest('.form').id;
+                        const sequence = inputSequences[currentForm];
+                        
+                        if (sequence) {
+                            // Get the current field's position in the sequence
+                            const currentIndex = sequence.indexOf(this.id);
+                            
+                            if (currentIndex < sequence.length - 1) {
+                                // Move to the next field in sequence
+                                document.getElementById(sequence[currentIndex + 1]).focus();
+                            } else {
+                                // If we're on the last field, trigger the calculate button
+                                const calcButton = this.closest('.form').querySelector('.calculate-btn');
+                                calcButton.click();
+                            }
+                        }
+                    }
+                });
             });
         });
         
