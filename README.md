@@ -1,4 +1,4 @@
-# <img src="https://github.com/lglandon1/Power-Tech-Tool/blob/main/Light%20Icon.png" alt="Tool Icon" width="30" height="30"> Power Tech Tool
+# <img src="https://github.com/lglandon1/Power-Tech-Tool/blob/main/Light%20Icon%20No%20Background.png" alt="Tool Icon" width="30" height="30"> Power Tech Tool
 
 A web-based utility for electrical, mechanical, and conversion calculations commonly used in power engineering applications. This tool provides conversions between Kuwait and US units, offering a convenient solution for engineers and technicians working across international standards.
 
