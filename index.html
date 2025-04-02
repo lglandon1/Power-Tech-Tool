@@ -13,6 +13,8 @@
     })();
   </script>
   <title>Power Tech Tool</title>
+  
+  <!-- ===================== CSS STYLES ===================== -->
   <style>
     :root {
       --primary-color: #2c3e50;
@@ -191,7 +193,7 @@
   </style>
 </head>
 <body>
-  <!-- Splash Screen -->
+  <!-- ===================== SPLASH SCREEN ===================== -->
   <div id="splash" class="container">
     <div class="card splash">
       <header>
@@ -225,7 +227,8 @@
       <button id="startBtn">START</button>
     </div>
   </div>
-  <!-- Main Menu -->
+
+  <!-- ===================== MAIN MENU ===================== -->
   <div id="main-menu" class="container hidden">
     <div class="card">
       <header>
@@ -262,7 +265,9 @@
       </div>
     </div>
   </div>
-  <!-- Forms -->
+  <!-- ===================== FORMS ===================== -->
+  
+  <!-- Single Phase Power Form -->
   <div id="single-phase" class="container form hidden">
     <div class="card">
       <div class="section-header">
@@ -287,6 +292,8 @@
       <div id="single-phase-result" class="result hidden"></div>
     </div>
   </div>
+
+  <!-- Three Phase Power Form -->
   <div id="three-phase" class="container form hidden">
     <div class="card">
       <div class="section-header">
@@ -319,15 +326,47 @@
       <div id="three-phase-result" class="result hidden"></div>
     </div>
   </div>
+
+  <!-- Liters to Gallons Form with Tank Reading Feature -->
   <div id="liters-gallons" class="container form hidden">
     <div class="card">
       <div class="section-header">
         <h2>LITERS TO US GALLONS CONVERSION</h2>
       </div>
       <div class="form-group">
-        <label>Liters:</label>
-        <input type="number" id="liters" placeholder="Enter volume in liters" required />
+        <label>Select Conversion Type:</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="simple-conversion" name="conversion-type" value="simple" checked />
+            <label for="simple-conversion">Simple Conversion</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="tank-reading" name="conversion-type" value="tank" />
+            <label for="tank-reading">Tank Reading</label>
+          </div>
+        </div>
       </div>
+      
+      <!-- Simple Conversion Section -->
+      <div id="simple-conversion-section">
+        <div class="form-group">
+          <label>Liters:</label>
+          <input type="number" id="liters" placeholder="Enter volume in liters" />
+        </div>
+      </div>
+      
+      <!-- Tank Reading Section -->
+      <div id="tank-reading-section" class="hidden">
+        <div class="form-group">
+          <label>Tank Capacity (Liters):</label>
+          <input type="number" id="tank-capacity" placeholder="Enter tank capacity in liters" />
+        </div>
+        <div class="form-group">
+          <label>Current Fuel Level (Liters):</label>
+          <input type="number" id="current-level" placeholder="Enter current fuel level in liters" />
+        </div>
+      </div>
+      
       <div class="button-row">
         <button class="back-btn">Back</button>
         <button class="calculate-btn" data-calc="liters-gallons">Convert</button>
@@ -335,6 +374,7 @@
       <div id="liters-gallons-result" class="result hidden"></div>
     </div>
   </div>
+  <!-- Celsius to Fahrenheit Form -->
   <div id="celsius-fahrenheit" class="container form hidden">
     <div class="card">
       <div class="section-header">
@@ -351,6 +391,8 @@
       <div id="celsius-fahrenheit-result" class="result hidden"></div>
     </div>
   </div>
+
+  <!-- Voltage Drop Form -->
   <div id="voltage-drop" class="container form hidden">
     <div class="card">
       <div class="section-header">
@@ -420,6 +462,8 @@
       <div id="voltage-drop-result" class="result hidden"></div>
     </div>
   </div>
+
+  <!-- kVA to kW Form -->
   <div id="kva-kw" class="container form hidden">
     <div class="card">
       <div class="section-header">
@@ -440,6 +484,7 @@
       <div id="kva-kw-result" class="result hidden"></div>
     </div>
   </div>
+  <!-- Fuel Consumption Form -->
   <div id="fuel-consumption" class="container form hidden">
     <div class="card">
       <div class="section-header">
@@ -473,6 +518,8 @@
       <div id="fuel-consumption-result" class="result hidden"></div>
     </div>
   </div>
+
+  <!-- Power Factor Correction Form -->
   <div id="pf-correction" class="container form hidden">
     <div class="card">
       <div class="section-header">
@@ -493,6 +540,8 @@
       <div id="pf-correction-result" class="result hidden"></div>
     </div>
   </div>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
   <script>
     // Constants & Input Field Sequences
     const DEFAULT_VOLTAGE = 400,
@@ -501,7 +550,7 @@
     const inputSequences = {
       'single-phase': ['sp-voltage', 'sp-current', 'sp-pf'],
       'three-phase': ['tp-voltage', 'tp-current1', 'tp-current2', 'tp-current3', 'tp-pf'],
-      'liters-gallons': ['liters'],
+      'liters-gallons': ['liters', 'tank-capacity', 'current-level'],
       'celsius-fahrenheit': ['celsius'],
       'voltage-drop': ['vd-voltage', 'vd-current', 'vd-length', 'vd-size-mm2'],
       'kva-kw': ['kva', 'kva-pf'],
@@ -509,7 +558,6 @@
       'pf-correction': ['kvar', 'pf-kw']
     };
     const awgSizes = { "14": 2.1, "12": 3.3, "10": 5.3, "8": 8.4, "6": 13.3, "4": 21.2, "2": 33.6, "1/0": 53.5, "2/0": 67.4, "4/0": 107.2 };
-
     // Theme Functions
     const localStorageAvailable = (() => {
       try {
@@ -584,8 +632,9 @@
       document.querySelectorAll(".form").forEach(f => f.classList.add("hidden"));
       document.getElementById("main-menu").classList.remove("hidden");
     }
-
-    // Attach Event Listeners (executed immediately as script is at the end)
+    // ===================== EVENT LISTENERS =====================
+    
+    // Initialize theme and set up event listeners
     initTheme();
     document.getElementById("theme-button").addEventListener("click", toggleTheme);
     document.getElementById("theme-button-menu").addEventListener("click", toggleTheme);
@@ -597,6 +646,8 @@
         currentTheme = newTheme;
       }
     });
+    
+    // Splash screen and main menu navigation
     document.getElementById("startBtn").addEventListener("click", () => {
       document.getElementById("splash").classList.add("hidden");
       showMainMenu();
@@ -605,18 +656,32 @@
       item.addEventListener("click", () => showForm(item.getAttribute("data-form")));
     });
     document.querySelectorAll(".back-btn").forEach(btn => btn.addEventListener("click", showMainMenu));
+    
+    // Toggle between AWG and mm² size units
     document.querySelectorAll('input[name="size-unit"]').forEach(radio => {
       radio.addEventListener("change", () => {
         document.getElementById("mm2-input").classList.toggle("hidden", radio.value !== "mm2");
         document.getElementById("awg-input").classList.toggle("hidden", radio.value === "mm2");
       });
     });
+    
+    // Toggle between kW and HP power units
     document.querySelectorAll('input[name="power-unit"]').forEach(radio => {
       radio.addEventListener("change", () => {
         document.getElementById("power-label").textContent =
           radio.value === "kw" ? "Power (kW):" : "Power (HP):";
       });
     });
+    
+    // Toggle between simple conversion and tank reading
+    document.querySelectorAll('input[name="conversion-type"]').forEach(radio => {
+      radio.addEventListener("change", () => {
+        document.getElementById("simple-conversion-section").classList.toggle("hidden", radio.value !== "simple");
+        document.getElementById("tank-reading-section").classList.toggle("hidden", radio.value !== "tank");
+      });
+    });
+    
+    // Handle Enter key navigation through form fields
     document.querySelectorAll('input[type="number"]').forEach(input => {
       input.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
@@ -632,11 +697,13 @@
         }
       });
     });
+    // Set up all calculation button handlers
     document.querySelectorAll(".calculate-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         let data = {};
         try {
           switch (btn.getAttribute("data-calc")) {
+            // Single Phase Power Calculation
             case "single-phase": {
               const v = validateInput(document.getElementById("sp-voltage").value || DEFAULT_VOLTAGE, 0, 10000, "Voltage");
               const i = validateInput(document.getElementById("sp-current").value, 0, 10000, "Current");
@@ -653,6 +720,8 @@
               showResult("single-phase-result", data);
               break;
             }
+            
+            // Three Phase Power Calculation
             case "three-phase": {
               const v = validateInput(document.getElementById("tp-voltage").value || DEFAULT_VOLTAGE, 0, 10000, "Voltage");
               const i1 = validateInput(document.getElementById("tp-current1").value, 0, 10000, "Phase 1 Current");
@@ -671,16 +740,40 @@
               showResult("three-phase-result", data);
               break;
             }
+            
+            // Liters to Gallons Conversion with Tank Reading Feature
             case "liters-gallons": {
-              const l = validateInput(document.getElementById("liters").value, 0, 100000, "Volume");
-              data = {
-                "Liters": `${l.toFixed(1)} L`,
-                "US Gallons": `${convLitersToGallons(l).toFixed(1)} gal`,
-                "Conversion Rate": "1 L = 0.264 gal"
-              };
+              const conversionType = document.querySelector('input[name="conversion-type"]:checked').value;
+              
+              if (conversionType === "simple") {
+                const liters = validateInput(document.getElementById("liters").value, 0, 100000, "Volume");
+                const gallons = convLitersToGallons(liters);
+                
+                data = {
+                  "Liters": `${liters.toFixed(1)} L`,
+                  "US Gallons": `${gallons.toFixed(1)} gal`,
+                  "Conversion Rate": "1 L = 0.264 gal"
+                };
+              } else { // tank reading
+                const tankCapacity = validateInput(document.getElementById("tank-capacity").value, 0, 1000000, "Tank Capacity");
+                const currentLevel = validateInput(document.getElementById("current-level").value, 0, tankCapacity, "Current Fuel Level");
+                
+                const tankCapacityGal = convLitersToGallons(tankCapacity);
+                const currentLevelGal = convLitersToGallons(currentLevel);
+                const fuelPercentage = (currentLevel / tankCapacity) * 100;
+                
+                data = {
+                  "Tank Capacity": `${tankCapacity.toFixed(1)} L (${tankCapacityGal.toFixed(1)} gal)`,
+                  "Current Fuel Level": `${currentLevel.toFixed(1)} L (${currentLevelGal.toFixed(1)} gal)`,
+                  "Fuel Remaining": `${fuelPercentage.toFixed(1)}%`,
+                  "Conversion Rate": "1 L = 0.264 gal"
+                };
+              }
+              
               showResult("liters-gallons-result", data);
               break;
             }
+            // Celsius to Fahrenheit Conversion
             case "celsius-fahrenheit": {
               const c = validateInput(document.getElementById("celsius").value, -50, 100, "Temperature");
               data = {
@@ -691,6 +784,8 @@
               showResult("celsius-fahrenheit-result", data);
               break;
             }
+            
+            // Voltage Drop Calculation
             case "voltage-drop": {
               const v = validateInput(document.getElementById("vd-voltage").value || DEFAULT_VOLTAGE, 0, 10000, "Voltage");
               const i = validateInput(document.getElementById("vd-current").value, 0, 10000, "Current");
@@ -711,6 +806,8 @@
               showResult("voltage-drop-result", data);
               break;
             }
+            
+            // kVA to kW Conversion
             case "kva-kw": {
               const kva = validateInput(document.getElementById("kva").value, 0, 100000, "kVA");
               const pf = validateInput(document.getElementById("kva-pf").value || DEFAULT_PF, 0, 1, "Power Factor");
@@ -722,6 +819,8 @@
               showResult("kva-kw-result", data);
               break;
             }
+            
+            // Fuel Consumption Calculation
             case "fuel-consumption": {
               const unit = document.querySelector('input[name="power-unit"]:checked').value;
               const p = validateInput(document.getElementById("fc-power").value, 0, 100000, "Power");
@@ -740,6 +839,8 @@
               showResult("fuel-consumption-result", data);
               break;
             }
+            
+            // Power Factor Correction Calculation
             case "pf-correction": {
               const kvar = validateInput(document.getElementById("kvar").value, 0, 100000, "kVAR");
               const kw = validateInput(document.getElementById("pf-kw").value, 0, 100000, "kW");
@@ -756,6 +857,12 @@
           alert(err.message);
         }
       });
+    });
+    
+    // Initialize the application
+    document.addEventListener("DOMContentLoaded", function() {
+      // Any additional initialization can go here
+      console.log("Power Tech Tool initialized");
     });
   </script>
 </body>
