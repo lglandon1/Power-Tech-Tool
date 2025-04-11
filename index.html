@@ -302,6 +302,7 @@
       <div class="form-group">
         <label>Voltage (V):</label>
         <input type="number" id="tp-voltage" placeholder="400" value="400" />
+        <button class="save-default-btn" style="margin-top: 5px; background-color: var(--secondary-color); color: white;">Save as Default</button>
       </div>
       <div class="form-group">
         <label>Phase 1 Current (A):</label>
@@ -318,10 +319,12 @@
       <div class="form-group">
         <label>Power Factor:</label>
         <input type="number" id="tp-pf" placeholder="0.85" value="0.85" step="0.01" min="0" max="1" />
+        <button class="save-default-btn" style="margin-top: 5px; background-color: var(--secondary-color); color: white;">Save as Default</button>
       </div>
       <div class="button-row">
         <button class="back-btn">Back</button>
         <button class="calculate-btn" data-calc="three-phase">Calculate</button>
+        <button class="reset-currents-btn">Reset Currents</button>
       </div>
       <div id="three-phase-result" class="result hidden"></div>
     </div>
@@ -547,6 +550,9 @@
     const DEFAULT_VOLTAGE = 400,
       DEFAULT_PF = 0.85,
       DEFAULT_EFF = 0.3;
+    // Persist default values for three-phase calculations
+    let savedVoltage = DEFAULT_VOLTAGE;
+    let savedPowerFactor = DEFAULT_PF;
     const inputSequences = {
       'single-phase': ['sp-voltage', 'sp-current', 'sp-pf'],
       'three-phase': ['tp-voltage', 'tp-current1', 'tp-current2', 'tp-current3', 'tp-pf'],
@@ -627,6 +633,11 @@
       document.getElementById("main-menu").classList.add("hidden");
       document.getElementById(formId).classList.remove("hidden");
       document.querySelectorAll(".result").forEach(r => r.classList.add("hidden"));
+      // Apply saved defaults for three-phase form
+      if (formId === "three-phase") {
+        document.getElementById("tp-voltage").value = savedVoltage;
+        document.getElementById("tp-pf").value = savedPowerFactor;
+      }
     }
     function showMainMenu() {
       document.querySelectorAll(".form").forEach(f => f.classList.add("hidden"));
@@ -697,6 +708,32 @@
         }
       });
     });
+
+    // Save default voltage and power factor
+    document.querySelectorAll(".save-default-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const voltageInput = document.getElementById("tp-voltage");
+        const pfInput = document.getElementById("tp-pf");
+        try {
+          savedVoltage = validateInput(voltageInput.value || DEFAULT_VOLTAGE, 0, 10000, "Voltage");
+          savedPowerFactor = validateInput(pfInput.value || DEFAULT_PF, 0, 1, "Power Factor");
+          alert("Default voltage and power factor saved!");
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+
+    // Reset current fields only
+    document.querySelectorAll(".reset-currents-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.getElementById("tp-current1").value = "";
+        document.getElementById("tp-current2").value = "";
+        document.getElementById("tp-current3").value = "";
+        document.getElementById("three-phase-result").classList.add("hidden");
+      });
+    });
+
     // Set up all calculation button handlers
     document.querySelectorAll(".calculate-btn").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -723,11 +760,11 @@
             
             // Three Phase Power Calculation
             case "three-phase": {
-              const v = validateInput(document.getElementById("tp-voltage").value || DEFAULT_VOLTAGE, 0, 10000, "Voltage");
+              const v = validateInput(document.getElementById("tp-voltage").value || savedVoltage, 0, 10000, "Voltage");
               const i1 = validateInput(document.getElementById("tp-current1").value, 0, 10000, "Phase 1 Current");
               const i2 = validateInput(document.getElementById("tp-current2").value, 0, 10000, "Phase 2 Current");
               const i3 = validateInput(document.getElementById("tp-current3").value, 0, 10000, "Phase 3 Current");
-              const pf = validateInput(document.getElementById("tp-pf").value || DEFAULT_PF, 0, 1, "Power Factor");
+              const pf = validateInput(document.getElementById("tp-pf").value || savedPowerFactor, 0, 1, "Power Factor");
               const power = calcThreePhaseKw(v, i1, i2, i3, pf);
               data = {
                 "Voltage": `${v.toFixed(1)} V`,
@@ -738,6 +775,10 @@
                 "Power": `${power.toFixed(1)} kW`
               };
               showResult("three-phase-result", data);
+              // Clear current fields for next calculation
+              document.getElementById("tp-current1").value = "";
+              document.getElementById("tp-current2").value = "";
+              document.getElementById("tp-current3").value = "";
               break;
             }
             
