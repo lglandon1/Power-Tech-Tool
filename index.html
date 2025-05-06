@@ -119,7 +119,7 @@
       font-weight: bold;
     }
     .menu-item:hover, button:hover { background-color: var(--primary-color); }
-    .back-btn { background-color: var(--back-button-background); }
+    .back-btn, .reset-btn { background-color: var(--back-button-background); }
     .form-group { margin-bottom: 15px; }
     label { display: block; margin-bottom: 5px; font-weight: bold; }
     input, select {
@@ -138,7 +138,7 @@
     }
     #result { margin-top: 20px; border-top: 2px solid #ddd; padding-top: 20px; }
     .result-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
-    .result-label {-chip: bold; }
+    .result-label { font-weight: bold; }
     .hidden { display: none; }
     .radio-group { display: flex; gap: 15px; margin-bottom: 15px; }
     .radio-option { display: flex; align-items: center; }
@@ -420,8 +420,22 @@
           <input type="number" id="current-level-liters" placeholder="Enter current fuel level in liters" />
         </div>
         <div id="level-fraction-input" class="form-group hidden">
-          <label>Fill Fraction (e.g., 1/2, 0.5, 3/4):</label>
-          <input type="text" id="fill-fraction" placeholder="Enter fraction or decimal (e.g., 1/2, 0.5)" />
+          <label>Fill Fraction:</label>
+          <select id="fill-fraction">
+            <option value="0.125">1/8</option>
+            <option value="0.25">1/4</option>
+            <option value="0.375">3/8</option>
+            <option value="0.5">1/2</option>
+            <option value="0.625">5/8</option>
+            <option value="0.75">3/4</option>
+            <option value="0.875">7/8</option>
+            <option value="1">1</option>
+            <option value="custom">Custom</option>
+          </select>
+          <div id="custom-fraction-input" class="form-group hidden">
+            <label>Custom Fraction (e.g., 1/2, 0.5):</label>
+            <input type="text" id="fill-fraction-custom" placeholder="Enter fraction or decimal (e.g., 1/2, 0.5)" />
+          </div>
         </div>
         <div id="level-percentage-input" class="form-group hidden">
           <label>Fill Percentage (e.g., 50%, 75.5%):</label>
@@ -432,6 +446,7 @@
       <div class="button-row">
         <button class="back-btn">Back</button>
         <button class="calculate-btn" data-calc="liters-gallons">Convert</button>
+        <button class="reset-btn">Reset</button>
       </div>
       <div id="liters-gallons-result" class="result hidden"></div>
     </div>
@@ -612,7 +627,7 @@
     const inputSequences = {
       'single-phase': ['sp-voltage', 'sp-current', 'sp-pf', 'sp-rated-power'],
       'three-phase': ['tp-voltage', 'tp-current1', 'tp-current2', 'tp-current3', 'tp-pf', 'tp-rated-power'],
-      'liters-gallons': ['liters', 'tank-capacity', 'current-level-liters', 'fill-fraction', 'fill-percentage'],
+      'liters-gallons': ['liters', 'tank-capacity', 'current-level-liters', 'fill-fraction', 'fill-fraction-custom', 'fill-percentage'],
       'celsius-fahrenheit': ['celsius'],
       'voltage-drop': ['vd-voltage', 'vd-current', 'vd-length', 'vd-size-mm2'],
       'kva-kw': ['kva', 'kva-pf'],
@@ -716,6 +731,21 @@
         warn.textContent = "Warning: Voltage drop exceeds 3%!";
         div.appendChild(warn);
       }
+      
+      // Add percentage bar for tank reading
+      if (id === "liters-gallons-result" && data["Fuel Remaining"]) {
+        const fuelPercentage = parseFloat(data["Fuel Remaining"]);
+        const barContainer = document.createElement("div");
+        barContainer.className = "percentage-bar-container";
+        const bar = document.createElement("div");
+        bar.className = "percentage-bar";
+        if (fuelPercentage > 90) bar.classList.add("danger");
+        else if (fuelPercentage > 75) bar.classList.add("warning");
+        bar.style.width = `${Math.min(fuelPercentage, 100)}%`;
+        bar.textContent = `${fuelPercentage.toFixed(1)}%`;
+        barContainer.appendChild(bar);
+        div.appendChild(barContainer);
+      }
     }
     function showForm(formId) {
       document.querySelectorAll(".form").forEach(f => f.classList.add("hidden"));
@@ -785,8 +815,13 @@
       });
     });
     
+    // Toggle custom fraction input
+    document.getElementById("fill-fraction").addEventListener("change", function() {
+      document.getElementById("custom-fraction-input").classList.toggle("hidden", this.value !== "custom");
+    });
+    
     // Handle Enter key navigation through form fields
-    document.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => {
+    document.querySelectorAll('input[type="number"], input[type="text"], select').forEach(input => {
       input.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -798,6 +833,10 @@
             index++;
             const nextInput = document.getElementById(seq[index]);
             if (nextInput && (nextInput.value || !nextInput.id.includes("rated-power"))) {
+              // Skip custom fraction input if not visible
+              if (nextInput.id === "fill-fraction-custom" && document.getElementById("fill-fraction").value !== "custom") {
+                continue;
+              }
               nextInput.focus();
               return;
             }
@@ -807,13 +846,27 @@
       });
     });
 
-    // Reset current fields only
+    // Reset current fields only for three-phase
     document.querySelectorAll(".reset-currents-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.getElementById("tp-current1").value = "";
         document.getElementById("tp-current2").value = "";
         document.getElementById("tp-current3").value = "";
         document.getElementById("three-phase-result").classList.add("hidden");
+      });
+    });
+
+    // Reset inputs for liters to gallons
+    document.querySelectorAll(".reset-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.getElementById("liters").value = "";
+        document.getElementById("tank-capacity").value = "";
+        document.getElementById("current-level-liters").value = "";
+        document.getElementById("fill-fraction").value = "0.125";
+        document.getElementById("fill-fraction-custom").value = "";
+        document.getElementById("fill-percentage").value = "";
+        document.getElementById("liters-gallons-result").classList.add("hidden");
+        document.getElementById("custom-fraction-input").classList.add("hidden");
       });
     });
 
@@ -1041,17 +1094,36 @@
                 const tankCapacity = validateInput(document.getElementById("tank-capacity").value, 0, 1000000, "Tank Capacity");
                 const levelType = document.querySelector('input[name="level-type"]:checked').value;
                 
-                let currentLevel;
+                let currentLevel, inputDisplay;
                 if (levelType === "liters") {
                   currentLevel = validateInput(document.getElementById("current-level-liters").value, 0, tankCapacity, "Current Fuel Level");
+                  inputDisplay = `${currentLevel.toFixed(1)} L`;
                 } else if (levelType === "fraction") {
-                  const fractionStr = document.getElementById("fill-fraction").value.trim();
-                  const fraction = parseFraction(fractionStr);
+                  const fractionSelect = document.getElementById("fill-fraction").value;
+                  let fraction;
+                  if (fractionSelect === "custom") {
+                    const fractionStr = document.getElementById("fill-fraction-custom").value.trim();
+                    fraction = parseFraction(fractionStr);
+                    inputDisplay = fractionStr;
+                  } else {
+                    fraction = parseFloat(fractionSelect);
+                    inputDisplay = {
+                      "0.125": "1/8", "0.25": "1/4", "0.375": "3/8", "0.5": "1/2",
+                      "0.625": "5/8", "0.75": "3/4", "0.875": "7/8", "1": "1"
+                    }[fractionSelect];
+                  }
+                  if (fraction > 1) {
+                    throw new Error("Fraction cannot exceed 1 (100% of tank capacity).");
+                  }
                   currentLevel = tankCapacity * fraction;
                 } else { // percentage
                   const percentageStr = document.getElementById("fill-percentage").value.trim();
                   const percentage = parsePercentage(percentageStr);
+                  if (percentage > 1) {
+                    throw new Error("Percentage cannot exceed 100%.");
+                  }
                   currentLevel = tankCapacity * percentage;
+                  inputDisplay = percentageStr;
                 }
                 
                 const tankCapacityGal = convLitersToGallons(tankCapacity);
@@ -1060,6 +1132,7 @@
                 
                 data = {
                   "Tank Capacity": `${tankCapacity.toFixed(1)} L (${tankCapacityGal.toFixed(1)} gal)`,
+                  "Input": inputDisplay,
                   "Current Fuel Level": `${currentLevel.toFixed(1)} L (${currentLevelGal.toFixed(1)} gal)`,
                   "Fuel Remaining": `${fuelPercentage.toFixed(1)}%`,
                   "Conversion Rate": "1 L = 0.264 gal"
