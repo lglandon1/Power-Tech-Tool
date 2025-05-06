@@ -138,7 +138,7 @@
     }
     #result { margin-top: 20px; border-top: 2px solid #ddd; padding-top: 20px; }
     .result-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
-    .result-label { font-weight: bold; }
+    .result-label {-chip: bold; }
     .hidden { display: none; }
     .radio-group { display: flex; gap: 15px; margin-bottom: 15px; }
     .radio-option { display: flex; align-items: center; }
@@ -399,8 +399,33 @@
           <input type="number" id="tank-capacity" placeholder="Enter tank capacity in liters" />
         </div>
         <div class="form-group">
+          <label>Current Fuel Level Input Type:</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" id="level-liters" name="level-type" value="liters" checked />
+              <label for="level-liters">Liters</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="level-fraction" name="level-type" value="fraction" />
+              <label for="level-fraction">Fraction</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" id="level-percentage" name="level-type" value="percentage" />
+              <label for="level-percentage">Percentage</label>
+            </div>
+          </div>
+        </div>
+        <div id="level-liters-input" class="form-group">
           <label>Current Fuel Level (Liters):</label>
-          <input type="number" id="current-level" placeholder="Enter current fuel level in liters" />
+          <input type="number" id="current-level-liters" placeholder="Enter current fuel level in liters" />
+        </div>
+        <div id="level-fraction-input" class="form-group hidden">
+          <label>Fill Fraction (e.g., 1/2, 0.5, 3/4):</label>
+          <input type="text" id="fill-fraction" placeholder="Enter fraction or decimal (e.g., 1/2, 0.5)" />
+        </div>
+        <div id="level-percentage-input" class="form-group hidden">
+          <label>Fill Percentage (e.g., 50%, 75.5%):</label>
+          <input type="text" id="fill-percentage" placeholder="Enter percentage (e.g., 50%, 75.5%)" />
         </div>
       </div>
       
@@ -587,7 +612,7 @@
     const inputSequences = {
       'single-phase': ['sp-voltage', 'sp-current', 'sp-pf', 'sp-rated-power'],
       'three-phase': ['tp-voltage', 'tp-current1', 'tp-current2', 'tp-current3', 'tp-pf', 'tp-rated-power'],
-      'liters-gallons': ['liters', 'tank-capacity', 'current-level'],
+      'liters-gallons': ['liters', 'tank-capacity', 'current-level-liters', 'fill-fraction', 'fill-percentage'],
       'celsius-fahrenheit': ['celsius'],
       'voltage-drop': ['vd-voltage', 'vd-current', 'vd-length', 'vd-size-mm2'],
       'kva-kw': ['kva', 'kva-pf'],
@@ -643,6 +668,35 @@
       if (isNaN(num)) throw new Error(`Invalid input for ${name}.`);
       if (num < min || num > max) throw new Error(`${name} must be between ${min} and ${max}.`);
       return num;
+    }
+    function parseFraction(str) {
+      str = str.trim();
+      if (str.includes('/')) {
+        const parts = str.split('/');
+        if (parts.length !== 2) {
+          throw new Error("Invalid fraction format. Please enter as numerator/denominator (e.g., 1/2).");
+        }
+        const numerator = parseFloat(parts[0].trim());
+        const denominator = parseFloat(parts[1].trim());
+        if (isNaN(numerator) || isNaN(denominator) || denominator === 0) {
+          throw new Error("Invalid fraction. Please enter valid numbers for numerator and denominator.");
+        }
+        return numerator / denominator;
+      } else {
+        const num = parseFloat(str);
+        if (isNaN(num)) {
+          throw new Error("Invalid input. Please enter a valid decimal or fraction.");
+        }
+        return num;
+      }
+    }
+    function parsePercentage(str) {
+      const cleanedStr = str.trim().replace('%', '');
+      const num = parseFloat(cleanedStr);
+      if (isNaN(num)) {
+        throw new Error("Invalid percentage format. Enter a number followed by % (e.g., 50%, 75.5%).");
+      }
+      return num / 100;
     }
     function showResult(id, data) {
       const div = document.getElementById(id);
@@ -722,8 +776,17 @@
       });
     });
     
+    // Toggle between liters, fraction, and percentage inputs
+    document.querySelectorAll('input[name="level-type"]').forEach(radio => {
+      radio.addEventListener("change", () => {
+        document.getElementById("level-liters-input").classList.toggle("hidden", radio.value !== "liters");
+        document.getElementById("level-fraction-input").classList.toggle("hidden", radio.value !== "fraction");
+        document.getElementById("level-percentage-input").classList.toggle("hidden", radio.value !== "percentage");
+      });
+    });
+    
     // Handle Enter key navigation through form fields
-    document.querySelectorAll('input[type="number"]').forEach(input => {
+    document.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => {
       input.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -734,7 +797,7 @@
           while (index < seq.length - 1) {
             index++;
             const nextInput = document.getElementById(seq[index]);
-            if (nextInput.value || !nextInput.id.includes("rated-power")) {
+            if (nextInput && (nextInput.value || !nextInput.id.includes("rated-power"))) {
               nextInput.focus();
               return;
             }
@@ -976,7 +1039,20 @@
                 };
               } else { // tank reading
                 const tankCapacity = validateInput(document.getElementById("tank-capacity").value, 0, 1000000, "Tank Capacity");
-                const currentLevel = validateInput(document.getElementById("current-level").value, 0, tankCapacity, "Current Fuel Level");
+                const levelType = document.querySelector('input[name="level-type"]:checked').value;
+                
+                let currentLevel;
+                if (levelType === "liters") {
+                  currentLevel = validateInput(document.getElementById("current-level-liters").value, 0, tankCapacity, "Current Fuel Level");
+                } else if (levelType === "fraction") {
+                  const fractionStr = document.getElementById("fill-fraction").value.trim();
+                  const fraction = parseFraction(fractionStr);
+                  currentLevel = tankCapacity * fraction;
+                } else { // percentage
+                  const percentageStr = document.getElementById("fill-percentage").value.trim();
+                  const percentage = parsePercentage(percentageStr);
+                  currentLevel = tankCapacity * percentage;
+                }
                 
                 const tankCapacityGal = convLitersToGallons(tankCapacity);
                 const currentLevelGal = convLitersToGallons(currentLevel);
