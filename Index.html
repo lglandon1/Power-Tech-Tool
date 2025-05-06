@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Immediately set theme to prevent FOUC -->
+  <script>
+    (function () {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorage.getItem('theme');
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <title>Power Tech Tool</title>
+  
+  <!-- ===================== CSS STYLES ===================== -->
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --background-color: #f5f5f5;
+      --text-color: #333;
+      --card-background: white;
+      --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      --menu-item-background: #ecf0f1;
+      --menu-item-color: #34495e;
+      --menu-item-hover-background: #3498db;
+      --menu-item-hover-color: white;
+      --input-border: #ddd;
+      --button-background: #3498db;
+      --back-button-background: #95a5a6;
+    }
+    [data-theme="dark"] {
+      --primary-color: #1a2530;
+      --secondary-color: #2980b9;
+      --accent-color: #c0392b;
+      --light-color: #2c3e50;
+      --dark-color: #1a2530;
+      --background-color: #121212;
+      --text-color: #f5f5f5;
+      --card-background: #1e1e1e;
+      --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      --menu-item-background: #2c3e50;
+      --menu-item-color: #ecf0f1;
+      --menu-item-hover-background: #2980b9;
+      --menu-item-hover-color: white;
+      --input-border: #444;
+      --button-background: #2980b9;
+      --back-button-background: #576574;
+    }
+    /* Section header styles */
+    .section-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    [data-theme="dark"] .section-header {
+      background-color: var(--secondary-color);
+    }
+    /* Global Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .card {
+      background-color: var(--card-background);
+      border-radius: 8px;
+      box-shadow: var(--card-shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: 20px;
+    }
+    h1 { margin: 0; font-size: 24px; }
+    h2 { margin-top: 0; font-size: 20px; }
+    /* Force h2 text white inside section headers */
+    .section-header h2 { color: white; }
+    .subtitle { margin: 5px 0 0; font-size: 16px; font-weight: normal; }
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    @media (max-width: 480px) {
+      .menu { grid-template-columns: 1fr; }
+      .theme-switch-wrapper { top: 10px; right: 10px; }
+    }
+    .menu-item, button {
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .menu-item {
+      background-color: var(--menu-item-background);
+      color: var(--menu-item-color);
+      font-weight: bold;
+    }
+    .menu-item:hover, button:hover { background-color: var(--primary-color); }
+    .back-btn { background-color: var(--back-button-background); }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--input-border);
+      border-radius: 4px;
+      font-size: 16px;
+      background-color: var(--card-background);
+      color: var(--text-color);
+    }
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    #result { margin-top: 20px; border-top: 2px solid #ddd; padding-top: 20px; }
+    .result-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .result-label { font-weight: bold; }
+    .hidden { display: none; }
+    .radio-group { display: flex; gap: 15px; margin-bottom: 15px; }
+    .radio-option { display: flex; align-items: center; }
+    .radio-option input { margin-right: 5px; }
+    .footer { text-align: center; padding: 10px; font-size: 14px; color: #666; }
+    .splash {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .splash h1 { font-size: 28px; margin-bottom: 20px; }
+    .conversion-list {
+      text-align: left;
+      max-width: 250px;
+      margin: 20px auto;
+    }
+    .splash button { margin-top: 20px; padding: 12px 30px; }
+    .warning { color: var(--accent-color); font-weight: bold; margin-top: 10px; }
+    /* Theme Toggle */
+    .theme-switch-wrapper {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+    }
+    .theme-toggle {
+      background: transparent;
+      border: none;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-color);
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .theme-toggle:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+      transform: scale(1.1);
+    }
+    [data-theme="dark"] .theme-toggle:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .theme-toggle svg {
+      width: 24px;
+      height: 24px;
+      transition: opacity 0.3s, transform 0.5s;
+    }
+    .theme-toggle .sun-icon { opacity: 1; transform: rotate(0deg); }
+    .theme-toggle .moon-icon { position: absolute; opacity: 0; transform: rotate(90deg); }
+    [data-theme="dark"] .theme-toggle .sun-icon { opacity: 0; transform: rotate(-90deg); }
+    [data-theme="dark"] .theme-toggle .moon-icon { opacity: 1; transform: rotate(0deg); }
+    /* Percentage bar styles */
+    .percentage-bar-container {
+      width: 100%;
+      height: 20px;
+      background-color: #eee;
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    [data-theme="dark"] .percentage-bar-container {
+      background-color: #333;
+    }
+    .percentage-bar {
+      height: 100%;
+      background-color: var(--secondary-color);
+      text-align: center;
+      line-height: 20px;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      transition: width 0.3s ease;
+    }
+    .percentage-bar.warning {
+      background-color: #f39c12;
+    }
+    .percentage-bar.danger {
+      background-color: var(--accent-color);
+    }
+  </style>
+</head>
+<body>
+  <!-- ===================== SPLASH SCREEN ===================== -->
+  <div id="splash" class="container">
+    <div class="card splash">
+      <header>
+        <div style="display: flex; align-items: center; justify-content: center;">
+          <img src="https://github.com/lglandon1/Power-Tech-Tool/raw/main/Light%20Icon%20No%20Background.png" alt="Power Tech Tool Icon" style="height: 100px; margin-right: 50px;" />
+          <div>
+            <h1>POWER TECH TOOL</h1>
+            <p class="subtitle"></p>
+          </div>
+        </div>
+      </header>
+      <div class="theme-switch-wrapper">
+        <button id="theme-button" class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3z"/>
+          </svg>
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.979 6.979 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z"/>
+          </svg>
+        </button>
+      </div>
+      <h2 class="splash-heading">Kuwait to US Conversions</h2>
+      <div class="conversion-list">
+        <p>Common Conversions:</p>
+        <ul>
+          <li>1m = 3.28ft</li>
+          <li>1L = 0.26gal</li>
+          <li>1kW = 1.34hp</li>
+        </ul>
+      </div>
+      <button id="startBtn">START</button>
+    </div>
+  </div>
+
+  <!-- ===================== MAIN MENU ===================== -->
+  <div id="main-menu" class="container hidden">
+    <div class="card">
+      <header>
+        <div style="display: flex; align-items: center; justify-content: center;">
+          <img src="https://github.com/lglandon1/Power-Tech-Tool/raw/main/Light%20Icon%20No%20Background.png" alt="Power Tech Tool Icon" style="height: 100px; margin-right: 50px;" />
+          <div>
+            <h1>POWER TECH TOOL</h1>
+            <p class="subtitle"></p>
+          </div>
+        </div>
+      </header>
+      <div class="theme-switch-wrapper">
+        <button id="theme-button-menu" class="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3z"/>
+          </svg>
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.979 6.979 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="menu">
+        <button class="menu-item" data-form="single-phase">Single Phase Power</button>
+        <button class="menu-item" data-form="three-phase">Three Phase Power</button>
+        <button class="menu-item" data-form="liters-gallons">Liters to Gallons</button>
+        <button class="menu-item" data-form="celsius-fahrenheit">°C to °F</button>
+        <button class="menu-item" data-form="voltage-drop">Voltage Drop</button>
+        <button class="menu-item" data-form="kva-kw">kVA to kW</button>
+        <button class="menu-item" data-form="fuel-consumption">Fuel Consumption</button>
+        <button class="menu-item" data-form="pf-correction">PF Correction</button>
+      </div>
+      <div class="footer">
+        <p>Defaults: 400V, PF 0.85</p>
+      </div>
+    </div>
+  </div>
+  <!-- ===================== FORMS ===================== -->
+  
+  <!-- Single Phase Power Form -->
+  <div id="single-phase" class="container form hidden">
+    <div class="card">
+      <div class="section-header">
+        <h2>SINGLE PHASE POWER CALCULATION</h2>
+      </div>
+      <div class="form-group">
+        <label>Voltage (V):</label>
+        <input type="number" id="sp-voltage" placeholder="400" value="400" />
+      </div>
+      <div class="form-group">
+        <label>Current (A):</label>
+        <input type="number" id="sp-current" placeholder="Enter current" required />
+      </div>
+      <div class="form-group">
+        <label>Power Factor:</label>
+        <input type="number" id="sp-pf" placeholder="0.85" value="0.85" step="0.01" min="0" max="1" />
+      </div>
+      <div class="form-group">
+        <label>Rated Power (kW):</label>
+        <input type="number" id="sp-rated-power" placeholder="Enter rated power (optional)" />
+      </div>
+      <div class="button-row">
+        <button class="back-btn">Back</button>
+        <button class="calculate-btn" data-calc="single-phase">Calculate</button>
+      </div>
+      <div id="single-phase-result" class="result hidden"></div>
+    </div>
+  </div>
+
+  <!-- Three Phase Power Form -->
+  <div id="three-phase" class="container form hidden">
+    <div class="card">
+      <div class="section-header">
+        <h2>THREE PHASE POWER CALCULATION</h2>
+      </div>
+      <div class="form-group">
+        <label>Voltage (V):</label>
+        <input type="number" id="tp-voltage" placeholder="400" value="400" />
+        <button class="save-default-btn" style="margin-top: 5px; background-color: var(--secondary-color); color: white;">Save as Default</button>
+      </div>
+      <div class="form-group">
+        <label>Phase 1 Current (A):</label>
+        <input type="number" id="tp-current1" placeholder="Enter current" required />
+      </div>
+      <div class="form-group">
+        <label>Phase 2 Current (A):</label>
+        <input type="number" id="tp-current2" placeholder="Enter current" required />
+      </div>
+      <div class="form-group">
+        <label>Phase 3 Current (A):</label>
+        <input type="number" id="tp-current3" placeholder="Enter current" required />
+      </div>
+      <div class="form-group">
+        <label>Power Factor:</label>
+        <input type="number" id="tp-pf" placeholder="0.85" value="0.85" step="0.01" min="0" max="1" />
+        <button class="save-default-btn" style="margin-top: 5px; background-color: var(--secondary-color); color: white;">Save as Default</button>
+      </div>
+      <div class="form-group">
+        <label>Rated Power (kW):</label>
+        <input type="number" id="tp-rated-power" placeholder="Enter rated power (optional)" />
+      </div>
+      <div class="button-row">
+        <button class="back-btn">Back</button>
+        <button class="calculate-btn" data-calc="three-phase">Calculate</button>
+        <button class="reset-currents-btn">Reset Currents</button>
+      </div>
+      <div id="three-phase-result" class="result hidden"></div>
+    </div>
+  </div>
+
+  <!-- Liters to Gallons Form with Tank Reading Feature -->
+  <div id="liters-gallons" class="container form hidden">
+    <div class="card">
+      <div class="section-header">
+        <h2>LITERS TO US GALLONS CONVERSION</h2>
+      </div>
+      <div class="form-group">
+        <label>Select Conversion Type:</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="simple-conversion" name="conversion-type" value="simple" checked />
+            <label for="simple-conversion">Simple Conversion</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="tank-reading" name="conversion-type" value="tank" />
+            <label for="tank-reading">Tank Reading</label>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Simple Conversion Section -->
+      <div id="simple-conversion-section">
+        <div class="form-group">
+          <label>Liters:</label>
+          <input type="number" id="liters" placeholder="Enter volume in liters" />
+        </div>
+      </div>
+      
+      <!-- Tank Reading Section -->
+      <div id="tank-reading-section" class="hidden">
+        <div class="form-group">
+          <label>Tank Capacity (Liters):</label>
+          <input type="number" id="tank-capacity" placeholder="Enter tank capacity in liters" />
+        </div>
+        <div class="form-group">
+          <label>Current Fuel Level (Liters):</label>
+          <input type="number" id="current-level" placeholder="Enter current fuel level in liters" />
+        </div>
+      </div>
+      
+      <div class="button-row">
+        <button class="back-btn">Back</button>
+        <button class="calculate-btn" data-calc="liters-gallons">Convert</button>
+      </div>
+      <div id="liters-gallons-result" class="result hidden"></div>
+    </div>
+  </div>
+  <!-- Celsius to Fahrenheit Form -->
+  <div id="celsius-fahrenheit" class="container form hidden">
+    <div class="card">
+      <div class="section-header">
+        <h2>CELSIUS TO FAHRENHEIT CONVERSION</h2>
+      </div>
+      <div class="form-group">
+        <label>Temperature (°C):</label>
+        <input type="number" id="celsius" placeholder="Enter temperature in °C" min="-50" max="100" required />
+      </div>
+      <div class="button-row">
+        <button class="back-btn">Back</button>
+        <button class="calculate-btn" data-calc="celsius-fahrenheit">Convert</button>
+      </div>
+      <div id="celsius-fahrenheit-result" class="result hidden"></div>
+    </div>
+  </div>
+
+  <!-- Voltage Drop Form -->
+  <div id="voltage-drop" class="container form hidden">
+    <div class="card">
+      <div class="section-header">
+        <h2>VOLTAGE DROP CALCULATION</h2>
+      </div>
+      <div class="form-group">
+        <label>Voltage (V):</label>
+        <input type="number" id="vd-voltage" placeholder="400" value="400" />
+      </div>
+      <div class="form-group">
+        <label>Current (A):</label>
+        <input type="number" id="vd-current" placeholder="Enter current" required />
+      </div>
+      <div class="form-group">
+        <label>Length Unit:</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="feet" name="length-unit" value="feet" checked />
+            <label for="feet">Feet</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="meters" name="length-unit" value="meters" />
+            <label for="meters">Meters</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Length:</label>
+        <input type="number" id="vd-length" placeholder="Enter length" required />
+      </div>
+      <div class="form-group">
+        <label>Conductor Size Unit:</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="mm2" name="size-unit" value="mm2" checked />
+            <label for="mm2">mm²</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="awg" name="size-unit" value="awg" />
+            <label for="awg">AWG</label>
+          </div>
+        </div>
+      </div>
+      <div id="mm2-input" class="form-group">
+        <label>Conductor Size (mm²):</label>
+        <input type="number" id="vd-size-mm2" placeholder="Enter size in mm²" min="0.5" required />
+      </div>
+      <div id="awg-input" class="form-group hidden">
+        <label>AWG Size:</label>
+        <select id="vd-size-awg">
+          <option value="14">14 AWG</option>
+          <option value="12">12 AWG</option>
+          <option value="10">10 AWG</option>
+          <option value="8">8 AWG</option>
+          <option value="6">6 AWG</option>
+          <option value="4">4 AWG</option>
+          <option value="2">2 AWG</option>
+          <option value="1/0">1/0 AWG</option>
+          <option value="2/0">2/0 AWG</option>
+          <option value="4/0">4/0 AWG</option>
+        </select>
+      </div>
+      <div class="button-row">
+        <button class="back-btn">Back</button>
+        <button class="calculate-btn" data-calc="voltage-drop">Calculate</button>
+      </div>
+      <div id="voltage-drop-result" class="result hidden"></div>
+    </div>
+  </div>
+
+  <!-- kVA to kW Form -->
+  <div id="kva-kw" class="container form hidden">
+    <div class="card">
+      <div class="section-header">
+        <h2>kVA TO kW CONVERSION</h2>
+      </div>
+      <div class="form-group">
+        <label>kVA:</label>
+        <input type="number" id="kva" placeholder="Enter kVA" required />
+      </div>
+      <div class="form-group">
+        <label>Power Factor:</label>
+        <input type="number" id="kva-pf" placeholder="0.85" value="0.85" step="0.01" min="0" max="1" />
+      </div>
+      <div class="button-row">
+        <button class="back-btn">Back</button>
+        <button class="calculate-btn" data-calc="kva-kw">Convert</button>
+      </div>
+      <div id="kva-kw-result" class="result hidden"></div>
+    </div>
+  </div>
+  <!-- Fuel Consumption Form -->
+  <div id="fuel-consumption" class="container form hidden">
+    <div class="card">
+      <div class="section-header">
+        <h2>FUEL CONSUMPTION CALCULATION</h2>
+      </div>
+      <div class="form-group">
+        <label>Power Unit:</label>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input type="radio" id="kw" name="power-unit" value="kw" checked />
+            <label for="kw">kW</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="hp" name="power-unit" value="hp" />
+            <label for="hp">HP</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label id="power-label">Power (kW):</label>
+        <input type="number" id="fc-power" placeholder="Enter power" required />
+      </div>
+      <div class="form  <div class="form-group">
+        <label>Efficiency:</label>
+        <input type="number" id="fc-efficiency" placeholder="0.3" value="0.3" step="0.01" min="0.1" max="1" />
+      </div>
+      <div class="button-row">
+        <button class="back-btn">Back</button>
+        <button class="calculate-btn" data-calc="fuel-consumption">Calculate</button>
+      </div>
+      <div id="fuel-consumption-result" class="result hidden"></div>
+    </div>
+  </div>
+
+  <!-- Power Factor Correction Form -->
+  <div id="pf-correction" class="container form hidden">
+    <div class="card">
+      <div class="section-header">
+        <h2>POWER FACTOR CORRECTION</h2>
+      </div>
+      <div class="form-group">
+        <label>kVAR:</label>
+        <input type="number" id="kvar" placeholder="Enter kVAR" required />
+      </div>
+      <div class="form-group">
+        <label>kW:</label>
+        <input type="number" id="pf-kw" placeholder="Enter kW" required />
+      </div>
+      <div class="button-row">
+        <button class="back-btn">Back</button>
+        <button class="calculate-btn" data-calc="pf-correction">Calculate</button>
+      </div>
+      <div id="pf-correction-result" class="result hidden"></div>
+    </div>
+  </div>
+
+<!-- ===================== JAVASCRIPT ===================== -->
+  <script>
+    // Constants & Input Field Sequences
+    const DEFAULT_VOLTAGE = 400,
+      DEFAULT_PF = 0.85,
+      DEFAULT_EFF = 0.3;
+    // Persist default values for three-phase calculations
+    let savedVoltage = DEFAULT_VOLTAGE;
+    let savedPowerFactor = DEFAULT_PF;
+    const inputSequences = {
+      'single-phase': ['sp-voltage', 'sp-current', 'sp-pf', 'sp-rated-power'],
+      'three-phase': ['tp-voltage', 'tp-current1', 'tp-current2', 'tp-current3', 'tp-pf', 'tp-rated-power'],
+      'liters-gallons': ['liters', 'tank-capacity', 'current-level'],
+      'celsius-fahrenheit': ['celsius'],
+      'voltage-drop': ['vd-voltage', 'vd-current', 'vd-length', 'vd-size-mm2'],
+      'kva-kw': ['kva', 'kva-pf'],
+      'fuel-consumption': ['fc-power', 'fc-efficiency'],
+      'pf-correction': ['kvar', 'pf-kw']
+    };
+    const awgSizes = { "14": 2.1, "12": 3.3, "10": 5.3, "8": 8.4, "6": 13.3, "4": 21.2, "2": 33.6, "1/0": 53.5, "2/0": 67.4, "4/0": 107.2 };
+    
+    // Theme Functions
+    const localStorageAvailable = (() => {
+      try {
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+    let currentTheme = 'light';
+    function initTheme() {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const savedTheme = localStorageAvailable ? localStorage.getItem('theme') : null;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      currentTheme = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    function toggleTheme() {
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      currentTheme = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+      if (localStorageAvailable) {
+        localStorage.setItem('theme', theme);
+      }
+    }
+
+    // Calculation Functions
+    function calcSinglePhaseKw(v, i, pf) { return (v * i * pf) / 1000; }
+    function calcThreePhaseKw(v, i1, i2, i3, pf) { return (v * ((i1 + i2 + i3) / 3) * pf * 1.732) / 1000; }
+    function calcLoadPercentage(actual, rated) { return (actual / rated) * 100; }
+    function convLitersToGallons(l) { return l * 0.264172; }
+    function convCelsiusToFahrenheit(c) { return (c * 9 / 5) + 32; }
+    function calcVoltageDropPercentage(v, i, lenM, size) {
+      const lenFt = lenM * 3.28084;
+      const resistance = 12.9 / (size * 0.64516);
+      const dropVolts = (2 * i * resistance * lenFt) / 1000;
+      return (dropVolts / v) * 100;
+    }
+    function convKvaToKw(kva, pf) { return kva * pf; }
+    function calcFuelConsumption(pw, eff) { return (pw * 0.25) / eff; }
+    function calcPowerFactorCorrection(kvar, kw) { return kw / Math.sqrt(kw ** 2 + kvar ** 2); }
+    function validateInput(val, min, max, name) {
+      const num = parseFloat(val);
+      if (isNaN(num)) throw new Error(`Invalid input for ${name}.`);
+      if (num < min || num > max) throw new Error(`${name} must be between ${min} and ${max}.`);
+      return num;
+    }
+    function showResult(id, data) {
+      const div = document.getElementById(id);
+      div.innerHTML = "";
+      div.classList.remove("hidden");
+      Object.entries(data).forEach(([label, value]) => {
+        const item = document.createElement("div");
+        item.className = "result-item";
+        item.innerHTML = `<div class="result-label">${label}:</div><div>${value}</div>`;
+        div.appendChild(item);
+      });
+      
+      // Special case for voltage drop warning
+      if (id === "voltage-drop-result" && parseFloat(data["Voltage Drop"]) > 3) {
+        const warn = document.createElement("div");
+        warn.className = "warning";
+        warn.textContent = "Warning: Voltage drop exceeds 3%!";
+        div.appendChild(warn);
+      }
+    }
+    function showForm(formId) {
+      document.querySelectorAll(".form").forEach(f => f.classList.add("hidden"));
+      document.getElementById("main-menu").classList.add("hidden");
+      document.getElementById(formId).classList.remove("hidden");
+      document.querySelectorAll(".result").forEach(r => r.classList.add("hidden"));
+      // Apply saved defaults for three-phase form
+      if (formId === "three-phase") {
+        document.getElementById("tp-voltage").value = savedVoltage;
+        document.getElementById("tp-pf").value = savedPowerFactor;
+      }
+    }
+    function showMainMenu() {
+      document.querySelectorAll(".form").forEach(f => f.classList.add("hidden"));
+      document.getElementById("main-menu").classList.remove("hidden");
+    }
+    // ===================== EVENT LISTENERS =====================
+    
+    // Initialize theme and set up event listeners
+    initTheme();
+    document.getElementById("theme-button").addEventListener("click", toggleTheme);
+    document.getElementById("theme-button-menu").addEventListener("click", toggleTheme);
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
+      if (!currentTheme || currentTheme === "auto") {
+        const newTheme = e.matches ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", newTheme);
+        if (localStorageAvailable) localStorage.setItem("theme", newTheme);
+        currentTheme = newTheme;
+      }
+    });
+    
+    // Splash screen and main menu navigation
+    document.getElementById("startBtn").addEventListener("click", () => {
+      document.getElementById("splash").classList.add("hidden");
+      showMainMenu();
+    });
+    document.querySelectorAll(".menu-item").forEach(item => {
+      item.addEventListener("click", () => showForm(item.getAttribute("data-form")));
+    });
+    document.querySelectorAll(".back-btn").forEach(btn => btn.addEventListener("click", showMainMenu));
+    
+    // Toggle between AWG and mm² size units
+    document.querySelectorAll('input[name="size-unit"]').forEach(radio => {
+      radio.addEventListener("change", () => {
+        document.getElementById("mm2-input").classList.toggle("hidden", radio.value !== "mm2");
+        document.getElementById("awg-input").classList.toggle("hidden", radio.value === "mm2");
+      });
+    });
+    
+    // Toggle between kW and HP power units
+    document.querySelectorAll('input[name="power-unit"]').forEach(radio => {
+      radio.addEventListener("change", () => {
+        document.getElementById("power-label").textContent =
+          radio.value === "kw" ? "Power (kW):" : "Power (HP):";
+      });
+    });
+    
+    // Toggle between simple conversion and tank reading
+    document.querySelectorAll('input[name="conversion-type"]').forEach(radio => {
+      radio.addEventListener("change", () => {
+        document.getElementById("simple-conversion-section").classList.toggle("hidden", radio.value !== "simple");
+        document.getElementById("tank-reading-section").classList.toggle("hidden", radio.value !== "tank");
+      });
+    });
+    
+    // Handle Enter key navigation through form fields
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const form = this.closest(".form").id;
+          const seq = inputSequences[form];
+          const index = seq.indexOf(this.id);
+          if (index < seq.length - 1) {
+            document.getElementById(seq[index + 1]).focus();
+          } else {
+            this.closest(".form").querySelector(".calculate-btn").click();
+          }
+        }
+      });
+    });
+
+    // Save default voltage and power factor
+    document.querySelectorAll(".save-default-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const voltageInput = document.getElementById("tp-voltage");
+        const pfInput = document.getElementById("tp-pf");
+        try {
+          savedVoltage = validateInput(voltageInput.value || DEFAULT_VOLTAGE, 0, 10000, "Voltage");
+          savedPowerFactor = validateInput(pfInput.value || DEFAULT_PF, 0, 1, "Power Factor");
+          alert("Default voltage and power factor saved!");
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+
+    // Reset current fields only
+    document.querySelectorAll(".reset-currents-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.getElementById("tp-current1").value = "";
+        document.getElementById("tp-current2").value = "";
+        document.getElementById("tp-current3").value = "";
+        document.getElementById("three-phase-result").classList.add("hidden");
+      });
+    });
+
+    // Set up all calculation button handlers
+    document.querySelectorAll(".calculate-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        let data = {};
+        try {
+          switch (btn.getAttribute("data-calc")) {
+            // Single Phase Power Calculation
+            case "single-phase": {
+              const v = validateInput(document.getElementById("sp-voltage").value || DEFAULT_VOLTAGE, 0, 10000, "Voltage");
+              const i = validateInput(document.getElementById("sp-current").value, 0, 10000, "Current");
+              const pf = validateInput(document.getElementById("sp-pf").value || DEFAULT_PF, 0, 1, "Power Factor");
+              const power = calcSinglePhaseKw(v, i, pf);
+              
+              data = {
+                "Voltage": `${v.toFixed(1)} V`,
+                "Current": `${i.toFixed(1)} A`,
+                "Power Factor": `${pf.toFixed(2)}`,
+                "Power (kW)": `${power.toFixed(1)} kW`,
+                "Power (hp)": `${(power * 1.34102).toFixed(1)} hp`
+              };
+              
+              const ratedPowerInput = document.getElementById("sp-rated-power").value;
+              let loadPercentage;
+              if (ratedPowerInput) {
+                const ratedPower = validateInput(ratedPowerInput, 0.1, 10000, "Rated Power");
+                loadPercentage = calcLoadPercentage(power, ratedPower);
+                data["Rated Power"] = `${ratedPower.toFixed(1)} kW`;
+                data["Load Percentage"] = `${loadPercentage.toFixed(1)}%`;
+              }
+              
+              // Create result container
+              const resultDiv = document.getElementById("single-phase-result");
+              resultDiv.innerHTML = "";
+              resultDiv.classList.remove("hidden");
+              
+              // Add all data items
+              Object.entries(data).forEach(([label, value]) => {
+                const item = document.createElement("div");
+                item.className = "result-item";
+                item.innerHTML = `<div class="result-label">${label}:</div><div>${value}</div>`;
+                resultDiv.appendChild(item);
+              });
+              
+              // Add percentage bar if loadPercentage exists
+              if (loadPercentage !== undefined) {
+                const barContainer = document.createElement("div");
+                barContainer.className = "percentage-bar-container";
+                
+                const bar = document.createElement("div");
+                bar.className = "percentage-bar";
+                if (loadPercentage > 90) {
+                  bar.classList.add("danger");
+                } else if (loadPercentage > 75) {
+                  bar.classList.add("warning");
+                }
+                bar.style.width = `${Math.min(loadPercentage, 100)}%`;
+                bar.textContent = `${loadPercentage.toFixed(1)}%`;
+                
+                barContainer.appendChild(bar);
+                resultDiv.appendChild(barContainer);
+              }
+              
+              // Add formula explanation
+              const formula = document.createElement("div");
+              formula.className = "result-item";
+              formula.innerHTML = `<div class="result-label">Formula:</div><div>P = (V × I × PF) / 1000</div>`;
+              resultDiv.appendChild(formula);
+              
+              break;
+            }
+            
+            // Three Phase Power Calculation
+            case "three-phase": {
+              const v = validateInput(document.getElementById("tp-voltage").value || savedVoltage, 0, 10000, "Voltage");
+              const i1 = validateInput(document.getElementById("tp-current1").value, 0, 10000, "Phase 1 Current");
+              const i2 = validateInput(document.getElementById("tp-current2").value, 0, 10000, "Phase 2 Current");
+              const i3 = validateInput(document.getElementById("tp-current3").value, 0, 10000, "Phase 3 Current");
+              const pf = validateInput(document.getElementById("tp-pf").value || savedPowerFactor, 0, 1, "Power Factor");
+              const power = calcThreePhaseKw(v, i1, i2, i3, pf);
+              
+              data = {
+                "Voltage": `${v.toFixed(1)} V`,
+                "Phase 1 Current": `${i1.toFixed(1)} A`,
+                "Phase 2 Current": `${i2.toFixed(1)} A`,
+                "Phase 3 Current": `${i3.toFixed(1)} A`,
+                "Power Factor": `${pf.toFixed(2)}`,
+                "Power": `${power.toFixed(1)} kW`
+              };
+              
+              const ratedPowerInput = document.getElementById("tp-rated-power").value;
+              let loadPercentage;
+              if (ratedPowerInput) {
+                const ratedPower = validateInput(ratedPowerInput, 0.1, 10000, "Rated Power");
+                loadPercentage = calcLoadPercentage(power, ratedPower);
+                data["Rated Power"] = `${ratedPower.toFixed(1)} kW`;
+                data["Load Percentage"] = `${loadPercentage.toFixed(1)}%`;
+              }
+              
+              // Create result container
+              const resultDiv = document.getElementById("three-phase-result");
+              resultDiv.innerHTML = "";
+              resultDiv.classList.remove("hidden");
+              
+              // Add all data items
+              Object.entries(data).forEach(([label, value]) => {
+                const item = document.createElement("div");
+                item.className = "result-item";
+                item.innerHTML = `<div class="result-label">${label}:</div><div>${value}</div>`;
+                resultDiv.appendChild(item);
+              });
+              
+              // Add percentage bar if loadPercentage exists
+              if (loadPercentage !== undefined) {
+                const barContainer = document.createElement("div");
+                barContainer.className = "percentage-bar-container";
+                
+                const bar = document.createElement("div");
+                bar.className = "percentage-bar";
+                if (loadPercentage > 90) {
+                  bar.classList.add("danger");
+                } else if (loadPercentage > 75) {
+                  bar.classList.add("warning");
+                }
+                bar.style.width = `${Math.min(loadPercentage, 100)}%`;
+                bar.textContent = `${loadPercentage.toFixed(1)}%`;
+                
+                barContainer.appendChild(bar);
+                resultDiv.appendChild(barContainer);
+              }
+              
+              // Add formula explanation
+              const formula = document.createElement("div");
+              formula.className = "result-item";
+              formula.innerHTML = `<div class="result-label">Formula:</div><div>P = (V × Iavg × PF × √3) / 1000</div>`;
+              resultDiv.appendChild(formula);
+              
+              // Clear current fields for next calculation
+              document.getElementById("tp-current1").value = "";
+              document.getElementById("tp-current2").value = "";
+              document.getElementById("tp-current3").value = "";
+              break;
+            }
+            
+            // Liters to Gallons Conversion with Tank Reading Feature
+            case "liters-gallons": {
+              const conversionType = document.querySelector('input[name="conversion-type"]:checked').value;
+              
+              if (conversionType === "simple") {
+                const liters = validateInput(document.getElementById("liters").value, 0, 100000, "Volume");
+                const gallons = convLitersToGallons(liters);
+                
+                data = {
+                  "Liters": `${liters.toFixed(1)} L`,
+                  "US Gallons": `${gallons.toFixed(1)} gal`,
+                  "Conversion Rate": "1 L = 0.264 gal"
+                };
+              } else { // tank reading
+                const tankCapacity = validateInput(document.getElementById("tank-capacity").value, 0, 1000000, "Tank Capacity");
+                const currentLevel = validateInput(document.getElementById("current-level").value, 0, tankCapacity, "Current Fuel Level");
+                
+                const tankCapacityGal = convLitersToGallons(tankCapacity);
+                const currentLevelGal = convLitersToGallons(currentLevel);
+                const fuelPercentage = (currentLevel / tankCapacity) * 100;
+                
+                data = {
+                  "Tank Capacity": `${tankCapacity.toFixed(1)} L (${tankCapacityGal.toFixed(1)} gal)`,
+                  "Current Fuel Level": `${currentLevel.toFixed(1)} L (${currentLevelGal.toFixed(1)} gal)`,
+                  "Fuel Remaining": `${fuelPercentage.toFixed(1)}%`,
+                  "Conversion Rate": "1 L = 0.264 gal"
+                };
+              }
+              
+              showResult("liters-gallons-result", data);
+              break;
+            }
+            // Celsius to Fahrenheit Conversion
+            case "celsius-fahrenheit": {
+              const c = validateInput(document.getElementById("celsius").value, -50, 100, "Temperature");
+              data = {
+                "Celsius": `${c.toFixed(1)}°C`,
+                "Fahrenheit": `${convCelsiusToFahrenheit(c).toFixed(1)}°F`,
+                "Formula": "°F = (°C × 9/5) + 32"
+              };
+              showResult("celsius-fahrenheit-result", data);
+              break;
+            }
+            
+            // Voltage Drop Calculation
+            case "voltage-drop": {
+              const v = validateInput(document.getElementById("vd-voltage").value || DEFAULT_VOLTAGE, 0, 10000, "Voltage");
+              const i = validateInput(document.getElementById("vd-current").value, 0, 10000, "Current");
+              const len = validateInput(document.getElementById("vd-length").value, 0, 10000, "Length");
+              const lengthUnit = document.querySelector('input[name="length-unit"]:checked').value;
+              const lenM = lengthUnit === "meters" ? len : len / 3.28084;
+              const size =
+                document.querySelector('input[name="size-unit"]:checked').value === "mm2"
+                  ? validateInput(document.getElementById("vd-size-mm2").value, 0.5, 1000, "Conductor Size")
+                  : awgSizes[document.getElementById("vd-size-awg").value];
+              data = {
+                "Voltage": `${v.toFixed(1)} V`,
+                "Current": `${i.toFixed(1)} A`,
+                "Length": `${(len * (lengthUnit === "meters" ? 3.28084 : 1)).toFixed(1)} ft (${lenM.toFixed(1)} m)`,
+                "Conductor Size": `${size.toFixed(1)} mm²`,
+                "Voltage Drop": `${calcVoltageDropPercentage(v, i, lenM, size).toFixed(1)}%`
+              };
+              showResult("voltage-drop-result", data);
+              break;
+            }
+            
+            // kVA to kW Conversion
+            case "kva-kw": {
+              const kva = validateInput(document.getElementById("kva").value, 0, 100000, "kVA");
+              const pf = validateInput(document.getElementById("kva-pf").value || DEFAULT_PF, 0, 1, "Power Factor");
+              data = {
+                "kVA": `${kva.toFixed(1)}`,
+                "Power Factor": `${pf.toFixed(2)}`,
+                "kW": `${convKvaToKw(kva, pf).toFixed(1)}`
+              };
+              showResult("kva-kw-result", data);
+              break;
+            }
+            
+            // Fuel Consumption Calculation
+            case "fuel-consumption": {
+              const unit = document.querySelector('input[name="power-unit"]:checked').value;
+              const p = validateInput(document.getElementById("fc-power").value, 0, 100000, "Power");
+              const powerKw = unit === "kw" ? p : p * 0.7457;
+              const powerHp = unit === "kw" ? p / 0.7457 : p;
+              const eff = validateInput(document.getElementById("fc-efficiency").value || DEFAULT_EFF, 0.1, 1, "Efficiency");
+              const fuelRate = calcFuelConsumption(powerKw, eff);
+              data = {
+                "Power": unit === "kw"
+                  ? `${powerKw.toFixed(1)} kW (${powerHp.toFixed(1)} hp)`
+                  : `${powerHp.toFixed(1)} hp (${powerKw.toFixed(1)} kW)`,
+                "Efficiency": `${eff.toFixed(2)}`,
+                "Fuel Consumption": `${convLitersToGallons(fuelRate).toFixed(2)} gal/h (${fuelRate.toFixed(1)} L/h)`,
+                "Specific Consumption": `${(convLitersToGallons(fuelRate) / (powerHp || 1)).toFixed(4)} gal/hp·h`
+              };
+              showResult("fuel-consumption-result", data);
+              break;
+            }
+            
+            // Power Factor Correction Calculation
+            case "pf-correction": {
+              const kvar = validateInput(document.getElementById("kvar").value, 0, 100000, "kVAR");
+              const kw = validateInput(document.getElementById("pf-kw").value, 0, 100000, "kW");
+              data = {
+                "kVAR": `${kvar.toFixed(1)}`,
+                "kW": `${kw.toFixed(1)}`,
+                "New Power Factor": `${calcPowerFactorCorrection(kvar, kw).toFixed(2)}`
+              };
+              showResult("pf-correction-result", data);
+              break;
+            }
+          }
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+    
+    // Initialize the application
+    document.addEventListener("DOMContentLoaded", function() {
+      // Any additional initialization can go here
+      console.log("Power Tech Tool initialized");
+    });
+  </script>
+</body>
+</html>
