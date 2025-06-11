@@ -629,7 +629,7 @@
       'three-phase': ['tp-voltage', 'tp-current1', 'tp-current2', 'tp-current3', 'tp-pf', 'tp-rated-power'],
       'liters-gallons': ['liters', 'tank-capacity', 'current-level-liters', 'fill-fraction', 'fill-fraction-custom', 'fill-percentage'],
       'celsius-fahrenheit': ['celsius'],
-      'voltage-drop': ['vd-voltage', 'vd-current', 'vd-length', 'vd-size-mm2'],
+      'voltage-drop': ['vd-voltage', 'vd-current', 'vd-length', 'vd-size-mm2', 'vd-size-awg'],
       'kva-kw': ['kva', 'kva-pf'],
       'fuel-consumption': ['fc-power', 'fc-efficiency'],
       'pf-correction': ['kvar', 'pf-kw']
@@ -832,14 +832,17 @@
           while (index < seq.length - 1) {
             index++;
             const nextInput = document.getElementById(seq[index]);
-            if (nextInput && (nextInput.value || !nextInput.id.includes("rated-power"))) {
-              // Skip custom fraction input if not visible
-              if (nextInput.id === "fill-fraction-custom" && document.getElementById("fill-fraction").value !== "custom") {
-                continue;
-              }
-              nextInput.focus();
-              return;
+            if (!nextInput) continue;
+            const group = nextInput.closest('.form-group');
+            if (group && group.classList.contains('hidden')) continue;
+            if (nextInput.id === 'fill-fraction-custom' && document.getElementById('fill-fraction').value !== 'custom') {
+              continue;
             }
+            if (nextInput.id.includes('rated-power') && !nextInput.value) {
+              continue;
+            }
+            nextInput.focus();
+            return;
           }
           this.closest(".form").querySelector(".calculate-btn").click();
         }
