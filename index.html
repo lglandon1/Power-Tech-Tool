@@ -665,7 +665,11 @@
 
     // Calculation Functions
     function calcSinglePhaseKw(v, i, pf) { return (v * i * pf) / 1000; }
-    function calcThreePhaseKw(v, i1, i2, i3, pf) { return (v * ((i1 + i2 + i3) / 3) * pf * 1.732) / 1000; }
+    // Three phase calculation now sums each phase contribution individually
+    // rather than averaging the currents and multiplying by √3
+    function calcThreePhaseKw(v, i1, i2, i3, pf) {
+      return (v * pf * (i1 + i2 + i3)) / 1000;
+    }
     function calcLoadPercentage(actual, rated) { return (actual / rated) * 100; }
     function convLitersToGallons(l) { return l * 0.264172; }
     function convCelsiusToFahrenheit(c) { return (c * 9 / 5) + 32; }
@@ -1067,7 +1071,7 @@
               // Add formula explanation
               const formula = document.createElement("div");
               formula.className = "result-item";
-              formula.innerHTML = `<div class="result-label">Formula:</div><div>P = (V × Iavg × PF × √3) / 1000</div>`;
+              formula.innerHTML = `<div class="result-label">Formula:</div><div>P = (V × PF × (I1 + I2 + I3)) / 1000</div>`;
               resultDiv.appendChild(formula);
               
               // Clear current fields for next calculation
