@@ -41,7 +41,7 @@ Current (Phase 1): 25A
 Current (Phase 2): 27A
 Current (Phase 3): 23A
 Power Factor: 0.85
-→ Result: 26.5 kW with load percentage visualization
+→ Result: 16.2 kW with load percentage visualization
 ```
 
 ## ⚙️ Default Settings
