@@ -12,7 +12,7 @@
       document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
-  <title>Power Tech Tool - Mechanic Edition</title>
+  <title>Power Tech Tool - Complete Edition</title>
   
   <style>
     :root {
@@ -20,7 +20,8 @@
       --primary-light: #1976d2;
       --secondary-color: #00695c; /* Professional Teal */
       --accent-color: #d32f2f; /* Red for errors/danger */
-      --warning-color: #ef6c00; /* Orange for warnings */
+      --warning-color: #f39c12; /* Orange for warnings */
+      --success-color: #27ae60; /* Green */
       --background: #f4f5f7;
       --surface: #ffffff;
       --surface-alt: #eef2f6;
@@ -82,6 +83,7 @@
     .menu-button p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.4; }
     
     .radio-group label { display: flex; align-items: center; gap: 0.5rem; }
+    .radio-group input { width: auto; }
 
     .form-group { margin-bottom: 1.5rem; }
     .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-primary); font-size: 0.9rem; }
@@ -94,7 +96,7 @@
     .btn-primary:hover { background-color: var(--primary-light); }
     .btn-secondary { background: var(--surface-alt); color: var(--text-primary); border: 1px solid var(--border-color); }
     .btn-secondary:hover { background: var(--border-color); }
-
+    
     .result-panel { background: var(--surface-alt); border-radius: var(--border-radius); padding: 1.5rem; margin-top: 2rem; border: 1px solid var(--border-color); }
     .result-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); gap: 1rem; }
     .result-item:last-child { border-bottom: none; }
@@ -103,6 +105,11 @@
     .result-value .primary { color: var(--text-primary); font-weight: 600; display: block; }
     .result-value .secondary { font-size: 0.9em; }
 
+    .percentage-bar-container { width: 100%; height: 20px; background-color: var(--border-color); border-radius: 10px; margin-top: 10px; overflow: hidden; }
+    .percentage-bar { height: 100%; background-color: var(--success-color); text-align: center; line-height: 20px; color: white; font-size: 12px; font-weight: bold; transition: width 0.3s ease, background-color 0.3s ease; }
+    .percentage-bar.warning { background-color: var(--warning-color); }
+    .percentage-bar.danger { background-color: var(--accent-color); }
+    
     .hidden { display: none !important; }
     
     .btn-copy { background: var(--secondary-color); color: white; font-size: 0.8rem; padding: 0.5rem 1rem; margin-top: 1.5rem; border-radius: var(--border-radius-sm); text-align: center; width: 100%; }
@@ -160,15 +167,20 @@
 
         <div id="main-menu">
           <div class="grid">
-             <!-- NEW Buttons -->
+             <!-- Mechanic Tools -->
             <div class="menu-button" data-calc="gen-sizing"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V5a1 1 0 00-1.447-.894l-4 2A1 1 0 0011 7v10zM5 17a1 1 0 001.447.894l4-2A1 1 0 0011 15V5a1 1 0 00-1.447-.894l-4 2A1 1 0 005 7v10z"></path></svg></div><div><h3>Generator Sizing</h3><p>Recommend a generator size</p></div></div>
             <div class="menu-button" data-calc="fuel-runtime"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg></div><div><h3>Fuel Runtime</h3><p>Estimate remaining run time</p></div></div>
-            <div class="menu-button" data-calc="fuel-level"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-1h5v2H5a1 1 0 01-1-1zm7 1h4a1 1 0 001-1V7a1 1 0 00-1-1h-4v8z" clip-rule="evenodd"></path></svg></div><div><h3>Fuel Level Converter</h3><p>Convert %, L, or Gal</p></div></div>
+            <div class="menu-button" data-calc="fuel-level"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-1h5v2H5a1 1 0 01-1-1zm7 1h4a1 1 0 001-1V7a1 1 0 00-1-1h-4v8z" clip-rule="evenodd"></path></svg></div><div><h3>Fuel Tank Converter</h3><p>Convert %, L, or Gal</p></div></div>
             <div class="menu-button" data-calc="rpm-freq"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10 4.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 12.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path></svg></div><div><h3>RPM ⇔ Frequency</h3><p>Check engine speed and Hz</p></div></div>
-            <!-- Existing buttons with new icons -->
+            <!-- Electrical -->
             <div class="menu-button" data-calc="single-phase"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg></div><div><h3>Single Phase Power</h3><p>Calculate power for 1Ø circuits</p></div></div>
             <div class="menu-button" data-calc="three-phase"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1z"></path></svg></div><div><h3>Three Phase Power</h3><p>Calculate power for 3Ø systems</p></div></div>
             <div class="menu-button" data-calc="voltage-drop"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg></div><div><h3>Voltage Drop</h3><p>Calculate voltage drop in cables</p></div></div>
+            <div class="menu-button" data-calc="power-factor"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"></path></svg></div><div><h3>Power Factor</h3><p>Calculate PF from kW & kVAR</p></div></div>
+            <!-- Conversions -->
+            <div class="menu-button" data-calc="kva-kw"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"></path></svg></div><div><h3>kVA ⇔ kW Conv.</h3><p>Convert apparent to real power</p></div></div>
+            <div class="menu-button" data-calc="fuel-consumption"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 2a1 1 0 00-1 1v1h1a1 1 0 010 2H4v1a1 1 0 001 1h2a1 1 0 001-1V6h-1a1 1 0 110-2h1V3a1 1 0 00-1-1H5zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 8a1 1 0 011-1h12a1 1 0 010 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg></div><div><h3>Fuel Consumption</h3><p>Est. fuel use for a given load</p></div></div>
+            <div class="menu-button" data-calc="temperature"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M13 3a1 1 0 011 1v5a1 1 0 01-2 0V4a1 1 0 011-1zm-4 0a1 1 0 011 1v9a1 1 0 11-2 0V4a1 1 0 011-1zM5 8a1 1 0 011-1h1a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg></div><div><h3>Temperature Conv.</h3><p>Convert Celsius & Fahrenheit</p></div></div>
           </div>
         </div>
 
@@ -194,11 +206,15 @@
     const forms = [
         { id: 'gen-sizing', title: 'Generator Sizing', content: `<div class="form-group"><label for="gs-running-load">Total Running Load (kW):</label><input type="number" id="gs-running-load" class="form-input"></div><div class="form-group"><label for="gs-starting-load">Largest Starting Load (kVA):</label><input type="number" id="gs-starting-load" class="form-input"></div><div class="form-group"><label for="gs-pf">Average Power Factor:</label><input type="number" id="gs-pf" class="form-input" value="0.8" step="0.01"></div><div class="form-group"><label for="gs-overhead">Safety Overhead (%):</label><input type="number" id="gs-overhead" class="form-input" value="25"></div>` },
         { id: 'fuel-runtime', title: 'Fuel Runtime', content: `<div class="form-group"><label>Tank Capacity Unit:</label><div class="radio-group"><label><input type="radio" name="fr-unit" value="gal" checked> Gallons</label><label><input type="radio" name="fr-unit" value="lit"> Liters</label></div></div><div class="form-group"><label for="fr-capacity">Tank Capacity:</label><input type="number" id="fr-capacity" class="form-input"></div><div class="form-group"><label for="fr-load">Current Generator Load (kW):</label><input type="number" id="fr-load" class="form-input"></div>` },
-        { id: 'fuel-level', title: 'Fuel Level Converter', content: `<div class="form-group"><label>Total Tank Capacity:</label><input id="fl-capacity" type="number" class="form-input"><div class="radio-group" style="margin-top:0.5rem;"><label><input type="radio" name="fl-cap-unit" value="gal" checked> Gallons</label><label><input type="radio" name="fl-cap-unit" value="lit"> Liters</label></div></div><hr style="border:none;border-top:1px solid var(--border-color);margin:1.5rem 0;"><div class="form-group"><label>Current Fuel Level:</label><input id="fl-current" type="number" class="form-input"><div class="radio-group" style="margin-top:0.5rem;"><label><input type="radio" name="fl-curr-unit" value="percent" checked> Percent (%)</label><label><input type="radio" name="fl-curr-unit" value="gal"> Gallons</label><label><input type="radio" name="fl-curr-unit" value="lit"> Liters</label></div></div>`},
+        { id: 'fuel-level', title: 'Fuel Tank Converter', content: `<div class="form-group"><label>Total Tank Capacity:</label><input id="fl-capacity" type="number" class="form-input"><div class="radio-group" style="margin-top:0.5rem;"><label><input type="radio" name="fl-cap-unit" value="gal" checked> Gallons</label><label><input type="radio" name="fl-cap-unit" value="lit"> Liters</label></div></div><hr style="border:none;border-top:1px solid var(--border-color);margin:1.5rem 0;"><div class="form-group"><label>Current Fuel Level:</label><input id="fl-current" type="number" class="form-input"><div class="radio-group" style="margin-top:0.5rem;"><label><input type="radio" name="fl-curr-unit" value="percent" checked> Percent (%)</label><label><input type="radio" name="fl-curr-unit" value="gal"> Gallons</label><label><input type="radio" name="fl-curr-unit" value="lit"> Liters</label></div></div>`},
         { id: 'rpm-freq', title: 'RPM ⇔ Frequency', content: `<p style="font-size:0.9em;color:var(--text-secondary);margin-bottom:1.5rem;">Enter two values to calculate the third.</p><div class="form-group"><label for="rf-rpm">Engine Speed (RPM):</label><input type="number" id="rf-rpm" class="form-input"></div><div class="form-group"><label for="rf-freq">Frequency (Hz):</label><input type="number" id="rf-freq" class="form-input"></div><div class="form-group"><label for="rf-poles">Alternator Poles:</label><input type="number" id="rf-poles" class="form-input"></div>` },
-        { id: 'single-phase', title: 'Single Phase Power', content: `<div class="form-group"><label for="sp-voltage">Voltage (V):</label><input type="number" id="sp-voltage" class="form-input" value="416"></div><div class="form-group"><label for="sp-current">Current (A):</label><input type="number" id="sp-current" class="form-input"></div><div class="form-group"><label for="sp-pf">Power Factor:</label><input type="number" id="sp-pf" class="form-input" value="0.85" step="0.01"></div>` },
-        { id: 'three-phase', title: 'Three Phase Power', content: `<div class="form-group"><label for="tp-voltage">Line-to-Line Voltage (V):</label><input type="number" id="tp-voltage" class="form-input" value="416"></div><div class="form-group"><label for="tp-current1">L1 Current (A):</label><input type="number" id="tp-current1" class="form-input"></div><div class="form-group"><label for="tp-current2">L2 Current (A):</label><input type="number" id="tp-current2" class="form-input"></div><div class="form-group"><label for="tp-current3">L3 Current (A):</label><input type="number" id="tp-current3" class="form-input"></div><div class="form-group"><label for="tp-pf">Power Factor:</label><input type="number" id="tp-pf" class="form-input" value="0.85" step="0.01"></div>` },
+        { id: 'single-phase', title: 'Single Phase Power', content: `<div class="form-group"><label for="sp-voltage">Voltage (V):</label><input type="number" id="sp-voltage" class="form-input" value="416"></div><div class="form-group"><label for="sp-current">Current (A):</label><input type="number" id="sp-current" class="form-input"></div><div class="form-group"><label for="sp-pf">Power Factor:</label><input type="number" id="sp-pf" class="form-input" value="0.85" step="0.01"></div><div class="form-group"><label for="sp-rated-power">Rated Power (kW) (Optional):</label><input type="number" id="sp-rated-power" class="form-input" placeholder="For load % calculation"></div>` },
+        { id: 'three-phase', title: 'Three Phase Power', content: `<div class="form-group"><label for="tp-voltage">Line-to-Line Voltage (V):</label><input type="number" id="tp-voltage" class="form-input" value="416"></div><div class="form-group"><label for="tp-current1">L1 Current (A):</label><input type="number" id="tp-current1" class="form-input"></div><div class="form-group"><label for="tp-current2">L2 Current (A):</label><input type="number" id="tp-current2" class="form-input"></div><div class="form-group"><label for="tp-current3">L3 Current (A):</label><input type="number" id="tp-current3" class="form-input"></div><div class="form-group"><label for="tp-pf">Power Factor:</label><input type="number" id="tp-pf" class="form-input" value="0.85" step="0.01"></div><div class="form-group"><label for="tp-rated-power">Rated Power (kW) (Optional):</label><input type="number" id="tp-rated-power" class="form-input" placeholder="For load % calculation"></div>` },
         { id: 'voltage-drop', title: 'Voltage Drop', content: `<div class="form-group"><label for="vd-voltage">System Voltage (V):</label><input type="number" id="vd-voltage" class="form-input" value="416"></div><div class="form-group"><label>Conductor Size Unit:</label><div class="radio-group"><label><input type="radio" name="vd-size-unit" value="awg" checked> AWG</label><label><input type="radio" name="vd-size-unit" value="mm2"> mm²</label></div></div><div class="form-group" id="vd-awg-group"><label for="vd-size-awg">Conductor Size (AWG):</label><select id="vd-size-awg" class="form-select">${Object.keys(CONVERSIONS.AWG_TO_MM2).map(awg => `<option value="${awg}">${awg}</option>`).join('')}</select></div><div class="form-group hidden" id="vd-mm2-group"><label for="vd-size-mm2">Conductor Size (mm²):</label><input type="number" id="vd-size-mm2" class="form-input"></div><div class="form-group"><label for="vd-current">Load Current (A):</label><input type="number" id="vd-current" class="form-input"></div><div class="form-group"><label>Length Unit:</label><div class="radio-group"><label><input type="radio" name="vd-len-unit" value="ft" checked> Feet</label><label><input type="radio" name="vd-len-unit" value="m"> Meters</label></div></div><div class="form-group"><label for="vd-length">One-Way Cable Length:</label><input type="number" id="vd-length" class="form-input"></div>`},
+        { id: 'kva-kw', title: 'kVA ⇔ kW Conversion', content: `<div class="form-group"><label>Conversion Direction:</label><div class="radio-group"><label><input type="radio" name="kk-dir" value="kvatokw" checked> kVA to kW</label><label><input type="radio" name="kk-dir" value="kwtokva"> kW to kVA</label></div></div><div class="form-group"><label for="kk-input" id="kk-label">Apparent Power (kVA):</label><input type="number" id="kk-input" class="form-input"></div><div class="form-group"><label for="kk-pf">Power Factor:</label><input type="number" id="kk-pf" class="form-input" value="0.85"></div>`},
+        { id: 'power-factor', title: 'Power Factor Calculator', content: `<div class="form-group"><label for="pfc-kw">Real Power (kW):</label><input type="number" id="pfc-kw" class="form-input"></div><div class="form-group"><label for="pfc-kvar">Reactive Power (kVAR):</label><input type="number" id="pfc-kvar" class="form-input"></div>`},
+        { id: 'fuel-consumption', title: 'Fuel Consumption', content: `<div class="form-group"><label>Engine Power Unit:</label><div class="radio-group"><label><input type="radio" name="fc-unit" value="kw" checked> kW</label><label><input type="radio" name="fc-unit" value="hp"> HP</label></div></div><div class="form-group"><label for="fc-power">Engine Power:</label><input type="number" id="fc-power" class="form-input"></div><div class="form-group"><label for="fc-efficiency">Engine Efficiency (e.g., 0.35):</label><input type="number" id="fc-efficiency" class="form-input" value="0.35"></div>`},
+        { id: 'temperature', title: 'Temperature Converter', content: `<div class="form-group"><label>Conversion Direction:</label><div class="radio-group"><label><input type="radio" name="temp-dir" value="ctof" checked> °C to °F</label><label><input type="radio" name="temp-dir" value="ftoc"> °F to °C</label></div></div><div class="form-group"><label for="temp-input" id="temp-label">Temperature in °C:</label><input type="number" id="temp-input" class="form-input"></div>`}
     ];
 
     // --- INITIALIZATION ---
@@ -292,13 +308,25 @@
         
         // Post-build event listeners for dynamic elements
         const vdSizeUnitInputs = document.querySelectorAll('input[name="vd-size-unit"]');
-        if (vdSizeUnitInputs) {
+        if (vdSizeUnitInputs.length > 0) {
             vdSizeUnitInputs.forEach(input => {
                 input.addEventListener('change', (e) => {
                     document.getElementById('vd-awg-group').classList.toggle('hidden', e.target.value !== 'awg');
                     document.getElementById('vd-mm2-group').classList.toggle('hidden', e.target.value !== 'mm2');
                 });
             });
+        }
+        const kkDirInputs = document.querySelectorAll('input[name="kk-dir"]');
+        if(kkDirInputs.length > 0) {
+            kkDirInputs.forEach(input => input.addEventListener('change', e => {
+                document.getElementById('kk-label').textContent = e.target.value === 'kvatokw' ? 'Apparent Power (kVA):' : 'Real Power (kW):';
+            }));
+        }
+         const tempDirInputs = document.querySelectorAll('input[name="temp-dir"]');
+        if(tempDirInputs.length > 0) {
+            tempDirInputs.forEach(input => input.addEventListener('change', e => {
+                document.getElementById('temp-label').textContent = e.target.value === 'ctof' ? 'Temperature in °C:' : 'Temperature in °F:';
+            }));
         }
     }
 
@@ -323,6 +351,21 @@
         resultHTML += `<div class="result-item"><span class="result-label">${item.label}</span><span class="result-value">${valueHTML}</span></div>`;
       });
       
+      const loadPercentageItem = data.find(item => item.label === 'Load Percentage');
+      if (loadPercentageItem) {
+          const barContainer = document.createElement('div');
+          barContainer.className = 'percentage-bar-container';
+          const bar = document.createElement('div');
+          const percent = parseFloat(loadPercentageItem.value);
+          bar.className = 'percentage-bar';
+          if(percent > 90) bar.classList.add('danger');
+          else if(percent > 75) bar.classList.add('warning');
+          bar.style.width = `${Math.min(percent, 100)}%`;
+          bar.textContent = `${percent.toFixed(1)}%`;
+          barContainer.appendChild(bar);
+          resultHTML += barContainer.outerHTML;
+      }
+      
       resultHTML += `<button class="btn btn-copy" onclick="copyToClipboard(this)">Copy Results</button>`;
       container.innerHTML = resultHTML;
       container.dataset.copytext = textToCopy.trim();
@@ -330,10 +373,23 @@
     
     function copyToClipboard(button) {
         const textToCopy = button.parentElement.dataset.copytext;
-        navigator.clipboard.writeText(textToCopy).then(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        textarea.style.position = 'fixed';
+        textarea.style.top = '-9999px';
+        textarea.setAttribute('readonly', '');
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
             button.textContent = 'Copied!';
-            setTimeout(() => { button.textContent = 'Copy Results' }, 2000);
-        });
+            setTimeout(() => { button.textContent = 'Copy Results'; }, 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            button.textContent = 'Copy Failed';
+            setTimeout(() => { button.textContent = 'Copy Results'; }, 2000);
+        }
+        document.body.removeChild(textarea);
     }
 
     // --- MASTER CALCULATION ROUTER ---
@@ -341,7 +397,7 @@
         try {
             let results = [];
             switch(formId) {
-                case 'gen-sizing':
+                case 'gen-sizing': {
                     const runningKW = parseFloat(document.getElementById('gs-running-load').value);
                     const startingKVA = parseFloat(document.getElementById('gs-starting-load').value);
                     const pf = parseFloat(document.getElementById('gs-pf').value);
@@ -355,7 +411,8 @@
                         { label: 'Recommended Size', value: { metric: `${finalKVA.toFixed(1)} kVA`, imperial: `${finalKW.toFixed(1)} kW` } }
                     ];
                     break;
-                case 'fuel-runtime':
+                }
+                case 'fuel-runtime': {
                     const capacity = parseFloat(document.getElementById('fr-capacity').value);
                     const unit = document.querySelector('input[name="fr-unit"]:checked').value;
                     const loadKW = parseFloat(document.getElementById('fr-load').value);
@@ -369,42 +426,30 @@
                         { label: 'Consumption Rate', value: { metric: `${consumptionLPH.toFixed(2)} L/h`, imperial: `${(consumptionLPH * CONVERSIONS.L_TO_GAL).toFixed(2)} gal/h` } }
                     ];
                     break;
-                case 'fuel-level':
+                }
+                case 'fuel-level': {
                     const capValue = parseFloat(document.getElementById('fl-capacity').value);
                     const capUnit = document.querySelector('input[name="fl-cap-unit"]:checked').value;
                     const currValue = parseFloat(document.getElementById('fl-current').value);
                     const currUnit = document.querySelector('input[name="fl-curr-unit"]:checked').value;
-
-                    if(isNaN(capValue) || isNaN(currValue)) {
-                        throw new Error("Please enter numeric values for capacity and current level.");
-                    }
-
+                    if(isNaN(capValue) || isNaN(currValue)) { throw new Error("Please enter numeric values for capacity and current level."); }
                     const tankLiters = capUnit === 'lit' ? capValue : capValue / CONVERSIONS.L_TO_GAL;
                     const tankGallons = tankLiters * CONVERSIONS.L_TO_GAL;
                     let currentLiters = 0;
-
-                    if (currUnit === 'percent') {
-                        currentLiters = tankLiters * (currValue / 100);
-                    } else if (currUnit === 'gal') {
-                        currentLiters = currValue / CONVERSIONS.L_TO_GAL;
-                    } else { // lit
-                        currentLiters = currValue;
-                    }
-                    
-                    if (currentLiters > tankLiters * 1.001) { // Add a small tolerance for floating point issues
-                        throw new Error("Current level cannot be greater than tank capacity.");
-                    }
-
+                    if (currUnit === 'percent') { currentLiters = tankLiters * (currValue / 100); }
+                    else if (currUnit === 'gal') { currentLiters = currValue / CONVERSIONS.L_TO_GAL; }
+                    else { currentLiters = currValue; }
+                    if (currentLiters > tankLiters * 1.001) { throw new Error("Current level cannot be greater than tank capacity."); }
                     const currentGallons = currentLiters * CONVERSIONS.L_TO_GAL;
                     const currentPercent = (tankLiters > 0) ? (currentLiters / tankLiters) * 100 : 0;
-                    
                     results = [
                         { label: 'Total Capacity', value: { metric: `${tankLiters.toFixed(1)} L`, imperial: `${tankGallons.toFixed(1)} gal` }},
                         { label: 'Current Level', value: { metric: `${currentLiters.toFixed(1)} L`, imperial: `${currentGallons.toFixed(1)} gal` }},
                         { label: 'Tank Percentage', value: `${currentPercent.toFixed(1)} %` }
                     ];
                     break;
-                case 'rpm-freq':
+                }
+                case 'rpm-freq': {
                     const rpm = document.getElementById('rf-rpm').value;
                     const freq = document.getElementById('rf-freq').value;
                     const poles = document.getElementById('rf-poles').value;
@@ -414,33 +459,46 @@
                     else if (freq && poles) { resultValue = (freq * 120) / poles; resultLabel = 'Calculated RPM'; }
                     results = [{ label: resultLabel, value: resultValue.toFixed(1) }];
                     break;
-                case 'single-phase':
-                    const spV = parseFloat(document.getElementById('sp-voltage').value);
-                    const spI = parseFloat(document.getElementById('sp-current').value);
-                    const spPF = parseFloat(document.getElementById('sp-pf').value);
-                    const spKW = (spV * spI * spPF) / 1000;
+                }
+                case 'single-phase': {
+                    const v = parseFloat(document.getElementById('sp-voltage').value);
+                    const i = parseFloat(document.getElementById('sp-current').value);
+                    const pf = parseFloat(document.getElementById('sp-pf').value);
+                    const rated = document.getElementById('sp-rated-power').value;
+                    const kw = (v * i * pf) / 1000;
                     results = [
-                        { label: 'Real Power', value: { metric: `${spKW.toFixed(2)} kW`, imperial: `${(spKW * CONVERSIONS.KW_TO_HP).toFixed(2)} HP` } },
-                        { label: 'Apparent Power', value: `${(spV * spI / 1000).toFixed(2)} kVA` }
+                        { label: 'Real Power', value: { metric: `${kw.toFixed(2)} kW`, imperial: `${(kw * CONVERSIONS.KW_TO_HP).toFixed(2)} HP` } },
+                        { label: 'Apparent Power', value: `${(v * i / 1000).toFixed(2)} kVA` }
                     ];
+                    if(rated) {
+                        const load = (kw / parseFloat(rated)) * 100;
+                        results.push({ label: 'Load Percentage', value: `${load.toFixed(1)}%` });
+                    }
                     break;
-                case 'three-phase':
-                    const tpV = parseFloat(document.getElementById('tp-voltage').value);
-                    const tpI1 = parseFloat(document.getElementById('tp-current1').value);
-                    const tpI2 = parseFloat(document.getElementById('tp-current2').value);
-                    const tpI3 = parseFloat(document.getElementById('tp-current3').value);
-                    const tpPF = parseFloat(document.getElementById('tp-pf').value);
-                    const avgI = (tpI1 + tpI2 + tpI3) / 3;
-                    const tpKW = (tpV * avgI * tpPF * Math.sqrt(3)) / 1000;
+                }
+                case 'three-phase': {
+                    const v = parseFloat(document.getElementById('tp-voltage').value);
+                    const i1 = parseFloat(document.getElementById('tp-current1').value);
+                    const i2 = parseFloat(document.getElementById('tp-current2').value);
+                    const i3 = parseFloat(document.getElementById('tp-current3').value);
+                    const pf = parseFloat(document.getElementById('tp-pf').value);
+                    const rated = document.getElementById('tp-rated-power').value;
+                    const avgI = (i1 + i2 + i3) / 3;
+                    const kw = (v * avgI * pf * Math.sqrt(3)) / 1000;
                     results = [
-                        { label: 'Real Power', value: { metric: `${tpKW.toFixed(2)} kW`, imperial: `${(tpKW * CONVERSIONS.KW_TO_HP).toFixed(2)} HP` } },
+                        { label: 'Real Power', value: { metric: `${kw.toFixed(2)} kW`, imperial: `${(kw * CONVERSIONS.KW_TO_HP).toFixed(2)} HP` } },
                         { label: 'Average Current', value: `${avgI.toFixed(1)} A` }
                     ];
+                    if(rated) {
+                        const load = (kw / parseFloat(rated)) * 100;
+                        results.push({ label: 'Load Percentage', value: `${load.toFixed(1)}%` });
+                    }
                     break;
-                case 'voltage-drop':
-                    const vdV = parseFloat(document.getElementById('vd-voltage').value);
-                    const vdI = parseFloat(document.getElementById('vd-current').value);
-                    const vdLen = parseFloat(document.getElementById('vd-length').value);
+                }
+                case 'voltage-drop': {
+                    const v = parseFloat(document.getElementById('vd-voltage').value);
+                    const i = parseFloat(document.getElementById('vd-current').value);
+                    const len = parseFloat(document.getElementById('vd-length').value);
                     const lenUnit = document.querySelector('input[name="vd-len-unit"]:checked').value;
                     const sizeUnit = document.querySelector('input[name="vd-size-unit"]:checked').value;
                     let mm2;
@@ -449,15 +507,57 @@
                     } else {
                         mm2 = parseFloat(document.getElementById('vd-size-mm2').value);
                     }
-                    const lenFt = lenUnit === 'ft' ? vdLen : vdLen * CONVERSIONS.M_TO_FT;
+                    const lenFt = lenUnit === 'ft' ? len : len * CONVERSIONS.M_TO_FT;
                     const cmil = mm2 * 1973.5;
-                    const vdVolts = (2 * 12.9 * vdI * lenFt) / cmil;
-                    const vdPercent = (vdVolts / vdV) * 100;
+                    const vdVolts = (2 * 12.9 * i * lenFt) / cmil;
+                    const vdPercent = (vdVolts / v) * 100;
                      results = [
                         { label: 'Voltage Drop', value: { metric: `${vdVolts.toFixed(1)} V`, imperial: `${vdPercent.toFixed(2)} %` } },
-                        { label: 'Voltage at Load', value: `${(vdV - vdVolts).toFixed(1)} V` }
+                        { label: 'Voltage at Load', value: `${(v - vdVolts).toFixed(1)} V` }
                     ];
                     break;
+                }
+                case 'kva-kw': {
+                    const dir = document.querySelector('input[name="kk-dir"]:checked').value;
+                    const val = parseFloat(document.getElementById('kk-input').value);
+                    const pf = parseFloat(document.getElementById('kk-pf').value);
+                    if(dir === 'kvatokw') {
+                        const kw = val * pf;
+                        results = [{label: 'Real Power', value: { metric: `${kw.toFixed(2)} kW`, imperial: `${(kw * CONVERSIONS.KW_TO_HP).toFixed(2)} HP`}}];
+                    } else {
+                        results = [{label: 'Apparent Power', value: `${(val / pf).toFixed(2)} kVA`}];
+                    }
+                    break;
+                }
+                case 'power-factor': {
+                    const kw = parseFloat(document.getElementById('pfc-kw').value);
+                    const kvar = parseFloat(document.getElementById('pfc-kvar').value);
+                    const kva = Math.sqrt(kw**2 + kvar**2);
+                    results = [
+                        {label: 'Apparent Power', value: `${kva.toFixed(2)} kVA`},
+                        {label: 'Power Factor', value: `${(kw/kva).toFixed(3)}`}
+                    ];
+                    break;
+                }
+                case 'fuel-consumption': {
+                    const pwr = parseFloat(document.getElementById('fc-power').value);
+                    const eff = parseFloat(document.getElementById('fc-efficiency').value);
+                    const unit = document.querySelector('input[name="fc-unit"]:checked').value;
+                    const pwrKw = unit === 'kw' ? pwr : pwr * 0.7457;
+                    const lph = (pwrKw / eff) / 10;
+                    results = [{label: 'Consumption', value: {metric: `${lph.toFixed(2)} L/h`, imperial: `${(lph * CONVERSIONS.L_TO_GAL).toFixed(2)} gal/h`}}];
+                    break;
+                }
+                case 'temperature': {
+                    const dir = document.querySelector('input[name="temp-dir"]:checked').value;
+                    const temp = parseFloat(document.getElementById('temp-input').value);
+                    if(dir === 'ctof'){
+                        results = [{label: 'Fahrenheit', value: `${(temp * 9/5 + 32).toFixed(1)} °F`}];
+                    } else {
+                        results = [{label: 'Celsius', value: `${((temp-32) * 5/9).toFixed(1)} °C`}];
+                    }
+                    break;
+                }
             }
             showResult(formId, results);
         } catch(e) {
