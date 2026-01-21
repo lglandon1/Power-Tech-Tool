@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Professional electrical and mechanical conversion calculator.">
   <script>
-    // Set theme on initial load to prevent flash of unstyled content
+    // Prevent FOUC (Flash of Unstyled Content)
     (function () {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const savedTheme = localStorage.getItem('theme');
@@ -13,557 +14,697 @@
     })();
   </script>
   <title>Power Tech Tool - Complete Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --primary-color: #0d47a1; /* Professional Dark Blue */
-      --primary-light: #1976d2;
-      --secondary-color: #00695c; /* Professional Teal */
-      --accent-color: #d32f2f; /* Red for errors/danger */
-      --warning-color: #f39c12; /* Orange for warnings */
-      --success-color: #27ae60; /* Green */
-      --background: #f4f5f7;
-      --surface: #ffffff;
-      --surface-alt: #eef2f6;
-      --text-primary: #1a202c;
-      --text-secondary: #4a5568;
-      --border-color: #d2d6dc;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-      --border-radius: 12px;
-      --border-radius-sm: 8px;
+      /* Base Variables - Light Mode */
+      --primary: #0284c7;        /* Modern Blue */
+      --primary-hover: #0369a1;
+      --secondary: #0f766e;      /* Teal */
+      --accent: #ef4444;         /* Red */
+      --warning: #f59e0b;        /* Amber */
+      --success: #10b981;        /* Emerald */
+      
+      --bg-body: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-input: #ffffff;
+      --bg-hover: #f8fafc;
+      
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      
+      --radius: 12px;
+      --radius-sm: 8px;
     }
 
     [data-theme="dark"] {
-      --primary-color: #1565c0;
-      --primary-light: #42a5f5;
-      --secondary-color: #26a69a;
-      --background: #1a202c;
-      --surface: #2d3748;
-      --surface-alt: #4a5568;
-      --text-primary: #f7fafc;
-      --text-secondary: #a0aec0;
-      --border-color: #4a5568;
+      /* Dark Mode Overrides */
+      --primary: #38bdf8;
+      --primary-hover: #0ea5e9;
+      --secondary: #2dd4bf;
+      
+      --bg-body: #0f172a;
+      --bg-card: #1e293b;
+      --bg-input: #334155;
+      --bg-hover: #334155;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--background); color: var(--text-primary); line-height: 1.6; min-height: 100vh; font-size: 16px; }
-    .container { max-width: 600px; margin: 0 auto; padding: 0.5rem; }
-
-    .header { background: var(--surface); color: var(--text-primary); padding: 1rem; text-align: center; border-radius: var(--border-radius); box-shadow: var(--shadow); margin-bottom: 1.5rem; }
-    .header-content { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
-    .header h1 { font-size: 1.5rem; font-weight: 700; }
-    .header .subtitle { font-size: 0.9rem; opacity: 0.9; color: var(--text-secondary); }
-    .header-top-controls { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 0.5rem; margin-bottom: 1rem; }
+    /* --- Reset & Base --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); line-height: 1.5; min-height: 100vh; transition: background 0.3s ease, color 0.3s ease; }
+    button, input, select { font-family: inherit; }
     
-    .unit-toggle-container { display: flex; align-items: center; gap: 0.5rem; background: var(--surface-alt); padding: 0.25rem 0.5rem; border-radius: 20px; }
-    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .container { max-width: 640px; margin: 0 auto; padding: 1rem; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* --- Splash Screen --- */
+    .splash-screen { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 1.5rem; animation: fadeIn 0.5s ease-out; }
+    .splash-screen img { width: 120px; height: 120px; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.1)); }
+    .splash-screen h1 { font-size: 2.25rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .splash-screen p { color: var(--text-muted); font-size: 1.1rem; }
+
+    /* --- Header --- */
+    .app-header { margin-bottom: 2rem; }
+    .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    
+    /* Toggle Switch */
+    .toggle-wrapper { display: flex; align-items: center; gap: 0.75rem; background: var(--bg-card); padding: 0.35rem 0.75rem; border-radius: 99px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+    .toggle-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; }
+    .switch { position: relative; width: 44px; height: 24px; }
     .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .4s; border-radius: 24px; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-    input:checked + .slider { background-color: var(--secondary-color); }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .3s; border-radius: 99px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    input:checked + .slider { background-color: var(--secondary); }
     input:checked + .slider:before { transform: translateX(20px); }
-    .unit-toggle-label { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); }
 
-    .theme-toggle { background: var(--surface-alt); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); transition: all 0.2s ease; }
-    .theme-toggle:hover { background: var(--border-color); }
-    .theme-toggle svg { width: 20px; height: 20px; }
+    /* Theme Button */
+    .theme-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow-sm); }
+    .theme-btn:hover { color: var(--primary); transform: rotate(15deg); border-color: var(--primary); }
+    .theme-btn svg { width: 22px; height: 22px; }
 
-    .card { background: var(--surface); border-radius: var(--border-radius); box-shadow: var(--shadow); border: 1px solid var(--border-color); overflow: hidden; transition: box-shadow 0.2s ease; margin-bottom: 1.5rem; }
-    .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); }
-    .card-header h2 { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 0.75rem; }
-    .card-content { padding: 1.5rem; }
+    .header-text { text-align: center; }
+    .header-text h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .header-text p { color: var(--text-muted); font-size: 0.95rem; }
 
-    .grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-    .menu-button { background: var(--surface); border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 1rem; text-align: left; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 1rem; }
-    .menu-button:hover { border-color: var(--primary-color); background: var(--surface-alt); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-    .menu-button .icon { width: 40px; height: 40px; background: var(--primary-light); color: white; border-radius: var(--border-radius-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .menu-button h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-primary); }
-    .menu-button p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.4; }
+    /* --- Grid Menu --- */
+    .grid-menu { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 600px) { .grid-menu { grid-template-columns: 1fr 1fr; } }
+
+    .menu-card { background: var(--bg-card); border: 1px solid var(--border); padding: 1.25rem; border-radius: var(--radius); cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 1rem; position: relative; overflow: hidden; }
+    .menu-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: var(--shadow-md); }
+    .menu-card:active { transform: scale(0.98); }
+    .menu-icon { width: 48px; height: 48px; background: rgba(2, 132, 199, 0.1); color: var(--primary); border-radius: var(--radius-sm); display: grid; place-items: center; flex-shrink: 0; transition: 0.2s; }
+    [data-theme="dark"] .menu-icon { background: rgba(56, 189, 248, 0.15); }
+    .menu-card:hover .menu-icon { background: var(--primary); color: white; }
+    .menu-icon svg { width: 24px; height: 24px; }
+    .menu-text h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.15rem; }
+    .menu-text p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.3; }
+
+    /* --- Calculation Forms --- */
+    .calc-card { background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow-lg); border: 1px solid var(--border); overflow: hidden; animation: slideUp 0.3s ease-out; }
+    .card-body { padding: 1.5rem; }
     
-    .radio-group label { display: flex; align-items: center; gap: 0.5rem; }
-    .radio-group input { width: auto; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-weight: 500; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-main); }
+    .form-input, .form-select { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-input); color: var(--text-main); font-size: 1rem; transition: 0.2s; -webkit-appearance: none; }
+    .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+    .form-input.error { border-color: var(--accent); animation: shake 0.4s; }
 
-    .form-group { margin-bottom: 1.5rem; }
-    .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-primary); font-size: 0.9rem; }
-    .form-input, .form-select { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); background: var(--surface); color: var(--text-primary); font-size: 1rem; transition: all 0.2s ease; }
-    .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.1); }
-    
-    .button-group { display: flex; gap: 1rem; margin-top: 2rem; flex-direction: column; }
-    .btn { padding: 0.85rem 1.5rem; border: none; border-radius: var(--border-radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 1rem; }
-    .btn-primary { background: var(--primary-color); color: white; }
-    .btn-primary:hover { background-color: var(--primary-light); }
-    .btn-secondary { background: var(--surface-alt); color: var(--text-primary); border: 1px solid var(--border-color); }
-    .btn-secondary:hover { background: var(--border-color); }
-    
-    .result-panel { background: var(--surface-alt); border-radius: var(--border-radius); padding: 1.5rem; margin-top: 2rem; border: 1px solid var(--border-color); }
-    .result-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); gap: 1rem; }
-    .result-item:last-child { border-bottom: none; }
-    .result-label { font-weight: 500; color: var(--text-primary); white-space: nowrap; }
-    .result-value { font-weight: 500; color: var(--text-secondary); text-align: right; }
-    .result-value .primary { color: var(--text-primary); font-weight: 600; display: block; }
-    .result-value .secondary { font-size: 0.9em; }
+    .radio-group { display: flex; gap: 1.5rem; padding: 0.5rem 0; }
+    .radio-group label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 400; margin: 0; }
+    .radio-group input[type="radio"] { width: 1.2em; height: 1.2em; accent-color: var(--primary); cursor: pointer; }
 
-    .percentage-bar-container { width: 100%; height: 20px; background-color: var(--border-color); border-radius: 10px; margin-top: 10px; overflow: hidden; }
-    .percentage-bar { height: 100%; background-color: var(--success-color); text-align: center; line-height: 20px; color: white; font-size: 12px; font-weight: bold; transition: width 0.3s ease, background-color 0.3s ease; }
-    .percentage-bar.warning { background-color: var(--warning-color); }
-    .percentage-bar.danger { background-color: var(--accent-color); }
+    /* --- Buttons --- */
+    .btn-group { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; margin-top: 2rem; }
+    .btn { padding: 0.85rem; border: none; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .btn:active { transform: scale(0.98); }
     
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3); }
+    .btn-primary:hover { background: var(--primary-hover); }
+    
+    .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--bg-hover); color: var(--text-main); border-color: var(--text-muted); }
+    
+    .btn-copy { width: 100%; margin-top: 1.25rem; background: var(--secondary); color: white; font-size: 0.9rem; padding: 0.6rem; }
+    .btn-copy:hover { opacity: 0.9; }
+
+    /* --- Results --- */
+    .result-panel { margin-top: 2rem; background: var(--bg-hover); border-radius: var(--radius-sm); padding: 1.25rem; border: 1px solid var(--border); }
+    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+    .result-row:last-child { border-bottom: none; }
+    .r-label { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+    .r-value { text-align: right; }
+    .r-main { font-weight: 700; font-size: 1.1rem; color: var(--text-main); display: block; }
+    .r-sub { font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 0.1rem; }
+
+    /* --- Bar Graph --- */
+    .bar-bg { width: 100%; height: 24px; background: var(--border); border-radius: 99px; margin-top: 1rem; overflow: hidden; position: relative; }
+    .bar-fill { height: 100%; background: var(--success); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 700; transition: width 0.5s ease; width: 0%; white-space: nowrap; }
+    .bar-fill.warning { background: var(--warning); }
+    .bar-fill.danger { background: var(--accent); }
+
+    /* --- Utilities --- */
     .hidden { display: none !important; }
-    
-    .btn-copy { background: var(--secondary-color); color: white; font-size: 0.8rem; padding: 0.5rem 1rem; margin-top: 1.5rem; border-radius: var(--border-radius-sm); text-align: center; width: 100%; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
-    .splash-screen { text-align: center; padding: 3rem 1rem; }
-    .splash-screen img { width: 100px; height: 100px; margin-bottom: 1rem; }
-    .splash-screen h1 { font-size: 2rem; }
-    .splash-screen p { color: var(--text-secondary); margin-bottom: 2rem; }
-
-    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .slide-in { animation: slideIn 0.4s ease-out forwards; }
-    
-    /* DESKTOP STYLES */
-    @media (min-width: 640px) {
-      .container { padding: 1rem; }
-      .grid { grid-template-columns: 1fr 1fr; }
-      .button-group { flex-direction: row; }
-      .header h1 { font-size: 2rem; }
-      .btn-copy { width: auto; max-width: 200px; margin-left: auto; margin-right: 0; }
-    }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
   <div class="container">
-    <div id="splash-screen" class="splash-screen slide-in">
-        <img src="https://github.com/lglandon1/Power-Tech-Tool/raw/main/Light%20Icon%20No%20Background.png" 
-             alt="Power Tech Tool Icon" onerror="this.onerror=null; this.remove();">
+    
+    <div id="splash-screen" class="splash-screen">
+      <img src="https://github.com/lglandon1/Power-Tech-Tool/raw/main/Light%20Icon%20No%20Background.png" alt="Icon" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDI4NGM3IiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik0xMyAyTDMgMTRoMTJsLTEgOGwxMC0xMmgtMTJ6Ii8+PC9zdmc+'">
+      <div>
         <h1>Power Tech Tool</h1>
-        <p>Your Electrical & Mechanical Conversion Assistant</p>
-        <button id="start-btn" class="btn btn-primary">Start Calculating</button>
+        <p>Electrical & Mechanical Calculator</p>
+      </div>
+      <button id="start-btn" class="btn btn-primary" style="width: 200px;">Start</button>
     </div>
 
     <div id="app-container" class="hidden">
-        <header class="header">
-            <div class="header-top-controls">
-                <div class="unit-toggle-container">
-                    <span class="unit-toggle-label">METRIC</span>
-                    <label class="switch">
-                        <input type="checkbox" id="unit-toggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                    <span class="unit-toggle-label">IMPERIAL</span>
-                </div>
-                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-                    <svg class="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    <svg class="moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                </button>
-            </div>
-          <div id="header-content" class="header-content">
-            <h1>Power Tech Tool</h1>
-            <p class="subtitle">Select a Calculation</p>
+      
+      <header class="app-header">
+        <div class="header-controls">
+          <div class="toggle-wrapper">
+            <span class="toggle-label">METRIC</span>
+            <label class="switch">
+              <input type="checkbox" id="unit-toggle" checked>
+              <span class="slider"></span>
+            </label>
+            <span class="toggle-label">IMPERIAL</span>
           </div>
-        </header>
+          <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme">
+            <svg class="icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <svg class="icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+          </button>
+        </div>
+        <div class="header-text" id="header-text">
+          <h1>Calculators</h1>
+          <p>Select a tool to begin</p>
+        </div>
+      </header>
 
-        <div id="main-menu">
-          <div class="grid">
-             <!-- Mechanic Tools -->
-            <div class="menu-button" data-calc="gen-sizing"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V5a1 1 0 00-1.447-.894l-4 2A1 1 0 0011 7v10zM5 17a1 1 0 001.447.894l4-2A1 1 0 0011 15V5a1 1 0 00-1.447-.894l-4 2A1 1 0 005 7v10z"></path></svg></div><div><h3>Generator Sizing</h3><p>Recommend a generator size</p></div></div>
-            <div class="menu-button" data-calc="fuel-runtime"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg></div><div><h3>Fuel Runtime</h3><p>Estimate remaining run time</p></div></div>
-            <div class="menu-button" data-calc="fuel-level"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-1h5v2H5a1 1 0 01-1-1zm7 1h4a1 1 0 001-1V7a1 1 0 00-1-1h-4v8z" clip-rule="evenodd"></path></svg></div><div><h3>Fuel Tank Converter</h3><p>Convert %, L, or Gal</p></div></div>
-            <div class="menu-button" data-calc="rpm-freq"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10 4.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 12.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"></path></svg></div><div><h3>RPM ⇔ Frequency</h3><p>Check engine speed and Hz</p></div></div>
-            <!-- Electrical -->
-            <div class="menu-button" data-calc="single-phase"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg></div><div><h3>Single Phase Power</h3><p>Calculate power for 1Ø circuits</p></div></div>
-            <div class="menu-button" data-calc="three-phase"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1z"></path></svg></div><div><h3>Three Phase Power</h3><p>Calculate power for 3Ø systems</p></div></div>
-            <div class="menu-button" data-calc="voltage-drop"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg></div><div><h3>Voltage Drop</h3><p>Calculate voltage drop in cables</p></div></div>
-            <div class="menu-button" data-calc="power-factor"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"></path></svg></div><div><h3>Power Factor</h3><p>Calculate PF from kW & kVAR</p></div></div>
-            <!-- Conversions -->
-            <div class="menu-button" data-calc="kva-kw"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"></path></svg></div><div><h3>kVA ⇔ kW Conv.</h3><p>Convert apparent to real power</p></div></div>
-            <div class="menu-button" data-calc="fuel-consumption"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 2a1 1 0 00-1 1v1h1a1 1 0 010 2H4v1a1 1 0 001 1h2a1 1 0 001-1V6h-1a1 1 0 110-2h1V3a1 1 0 00-1-1H5zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 8a1 1 0 011-1h12a1 1 0 010 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg></div><div><h3>Fuel Consumption</h3><p>Est. fuel use for a given load</p></div></div>
-            <div class="menu-button" data-calc="temperature"><div class="icon"><svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M13 3a1 1 0 011 1v5a1 1 0 01-2 0V4a1 1 0 011-1zm-4 0a1 1 0 011 1v9a1 1 0 11-2 0V4a1 1 0 011-1zM5 8a1 1 0 011-1h1a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg></div><div><h3>Temperature Conv.</h3><p>Convert Celsius & Fahrenheit</p></div></div>
-          </div>
+      <div id="main-menu" class="grid-menu">
         </div>
 
-        <div id="calculation-forms">
-            <!-- Forms will be injected here by JS -->
+      <div id="calculation-area" class="hidden">
         </div>
+
     </div>
   </div>
 
 <script>
-    // --- GLOBAL SETTINGS & STATE ---
-    let displayUnit = 'imperial'; 
-    let currentForm = null;
-
-    const CONVERSIONS = {
+    // --- CONSTANTS ---
+    const CONV = {
         L_TO_GAL: 0.264172,
         M_TO_FT: 3.28084,
         KW_TO_HP: 1.34102,
-        AWG_TO_MM2: { '14': 2.08, '12': 3.31, '10': 5.26, '8': 8.37, '6': 13.3, '4': 21.15, '2': 33.6, '1/0': 53.5, '2/0': 67.4, '4/0': 107.2 }
+        AWG_MM2: { '14': 2.08, '12': 3.31, '10': 5.26, '8': 8.37, '6': 13.3, '4': 21.15, '2': 33.6, '1/0': 53.5, '2/0': 67.4, '4/0': 107.2 }
     };
 
-    // --- FORM DEFINITIONS ---
-    const forms = [
-        { id: 'gen-sizing', title: 'Generator Sizing', content: `<div class="form-group"><label for="gs-running-load">Total Running Load (kW):</label><input type="number" id="gs-running-load" class="form-input"></div><div class="form-group"><label for="gs-starting-load">Largest Starting Load (kVA):</label><input type="number" id="gs-starting-load" class="form-input"></div><div class="form-group"><label for="gs-pf">Average Power Factor:</label><input type="number" id="gs-pf" class="form-input" value="0.8" step="0.01"></div><div class="form-group"><label for="gs-overhead">Safety Overhead (%):</label><input type="number" id="gs-overhead" class="form-input" value="25"></div>` },
-        { id: 'fuel-runtime', title: 'Fuel Runtime', content: `<div class="form-group"><label>Tank Capacity Unit:</label><div class="radio-group"><label><input type="radio" name="fr-unit" value="gal" checked> Gallons</label><label><input type="radio" name="fr-unit" value="lit"> Liters</label></div></div><div class="form-group"><label for="fr-capacity">Tank Capacity:</label><input type="number" id="fr-capacity" class="form-input"></div><div class="form-group"><label for="fr-load">Current Generator Load (kW):</label><input type="number" id="fr-load" class="form-input"></div>` },
-        { id: 'fuel-level', title: 'Fuel Tank Converter', content: `<div class="form-group"><label>Total Tank Capacity:</label><input id="fl-capacity" type="number" class="form-input"><div class="radio-group" style="margin-top:0.5rem;"><label><input type="radio" name="fl-cap-unit" value="gal" checked> Gallons</label><label><input type="radio" name="fl-cap-unit" value="lit"> Liters</label></div></div><hr style="border:none;border-top:1px solid var(--border-color);margin:1.5rem 0;"><div class="form-group"><label>Current Fuel Level:</label><input id="fl-current" type="number" class="form-input"><div class="radio-group" style="margin-top:0.5rem;"><label><input type="radio" name="fl-curr-unit" value="percent" checked> Percent (%)</label><label><input type="radio" name="fl-curr-unit" value="gal"> Gallons</label><label><input type="radio" name="fl-curr-unit" value="lit"> Liters</label></div></div>`},
-        { id: 'rpm-freq', title: 'RPM ⇔ Frequency', content: `<p style="font-size:0.9em;color:var(--text-secondary);margin-bottom:1.5rem;">Enter two values to calculate the third.</p><div class="form-group"><label for="rf-rpm">Engine Speed (RPM):</label><input type="number" id="rf-rpm" class="form-input"></div><div class="form-group"><label for="rf-freq">Frequency (Hz):</label><input type="number" id="rf-freq" class="form-input"></div><div class="form-group"><label for="rf-poles">Alternator Poles:</label><input type="number" id="rf-poles" class="form-input"></div>` },
-        { id: 'single-phase', title: 'Single Phase Power', content: `<div class="form-group"><label for="sp-voltage">Voltage (V):</label><input type="number" id="sp-voltage" class="form-input" value="416"></div><div class="form-group"><label for="sp-current">Current (A):</label><input type="number" id="sp-current" class="form-input"></div><div class="form-group"><label for="sp-pf">Power Factor:</label><input type="number" id="sp-pf" class="form-input" value="0.85" step="0.01"></div><div class="form-group"><label for="sp-rated-power">Rated Power (kW) (Optional):</label><input type="number" id="sp-rated-power" class="form-input" placeholder="For load % calculation"></div>` },
-        { id: 'three-phase', title: 'Three Phase Power', content: `<div class="form-group"><label for="tp-voltage">Line-to-Line Voltage (V):</label><input type="number" id="tp-voltage" class="form-input" value="416"></div><div class="form-group"><label for="tp-current1">L1 Current (A):</label><input type="number" id="tp-current1" class="form-input"></div><div class="form-group"><label for="tp-current2">L2 Current (A):</label><input type="number" id="tp-current2" class="form-input"></div><div class="form-group"><label for="tp-current3">L3 Current (A):</label><input type="number" id="tp-current3" class="form-input"></div><div class="form-group"><label for="tp-pf">Power Factor:</label><input type="number" id="tp-pf" class="form-input" value="0.85" step="0.01"></div><div class="form-group"><label for="tp-rated-power">Rated Power (kW) (Optional):</label><input type="number" id="tp-rated-power" class="form-input" placeholder="For load % calculation"></div>` },
-        { id: 'voltage-drop', title: 'Voltage Drop', content: `<div class="form-group"><label for="vd-voltage">System Voltage (V):</label><input type="number" id="vd-voltage" class="form-input" value="416"></div><div class="form-group"><label>Conductor Size Unit:</label><div class="radio-group"><label><input type="radio" name="vd-size-unit" value="awg" checked> AWG</label><label><input type="radio" name="vd-size-unit" value="mm2"> mm²</label></div></div><div class="form-group" id="vd-awg-group"><label for="vd-size-awg">Conductor Size (AWG):</label><select id="vd-size-awg" class="form-select">${Object.keys(CONVERSIONS.AWG_TO_MM2).map(awg => `<option value="${awg}">${awg}</option>`).join('')}</select></div><div class="form-group hidden" id="vd-mm2-group"><label for="vd-size-mm2">Conductor Size (mm²):</label><input type="number" id="vd-size-mm2" class="form-input"></div><div class="form-group"><label for="vd-current">Load Current (A):</label><input type="number" id="vd-current" class="form-input"></div><div class="form-group"><label>Length Unit:</label><div class="radio-group"><label><input type="radio" name="vd-len-unit" value="ft" checked> Feet</label><label><input type="radio" name="vd-len-unit" value="m"> Meters</label></div></div><div class="form-group"><label for="vd-length">One-Way Cable Length:</label><input type="number" id="vd-length" class="form-input"></div>`},
-        { id: 'kva-kw', title: 'kVA ⇔ kW Conversion', content: `<div class="form-group"><label>Conversion Direction:</label><div class="radio-group"><label><input type="radio" name="kk-dir" value="kvatokw" checked> kVA to kW</label><label><input type="radio" name="kk-dir" value="kwtokva"> kW to kVA</label></div></div><div class="form-group"><label for="kk-input" id="kk-label">Apparent Power (kVA):</label><input type="number" id="kk-input" class="form-input"></div><div class="form-group"><label for="kk-pf">Power Factor:</label><input type="number" id="kk-pf" class="form-input" value="0.85"></div>`},
-        { id: 'power-factor', title: 'Power Factor Calculator', content: `<div class="form-group"><label for="pfc-kw">Real Power (kW):</label><input type="number" id="pfc-kw" class="form-input"></div><div class="form-group"><label for="pfc-kvar">Reactive Power (kVAR):</label><input type="number" id="pfc-kvar" class="form-input"></div>`},
-        { id: 'fuel-consumption', title: 'Fuel Consumption', content: `<div class="form-group"><label>Engine Power Unit:</label><div class="radio-group"><label><input type="radio" name="fc-unit" value="kw" checked> kW</label><label><input type="radio" name="fc-unit" value="hp"> HP</label></div></div><div class="form-group"><label for="fc-power">Engine Power:</label><input type="number" id="fc-power" class="form-input"></div><div class="form-group"><label for="fc-efficiency">Engine Efficiency (e.g., 0.35):</label><input type="number" id="fc-efficiency" class="form-input" value="0.35"></div>`},
-        { id: 'temperature', title: 'Temperature Converter', content: `<div class="form-group"><label>Conversion Direction:</label><div class="radio-group"><label><input type="radio" name="temp-dir" value="ctof" checked> °C to °F</label><label><input type="radio" name="temp-dir" value="ftoc"> °F to °C</label></div></div><div class="form-group"><label for="temp-input" id="temp-label">Temperature in °C:</label><input type="number" id="temp-input" class="form-input"></div>`}
+    const TOOLS = [
+      { id: 'gen-sizing', icon: 'M13 10V3L4 14h7v7l9-11h-7z', title: 'Generator Sizing', desc: 'Size kW/kVA based on loads' },
+      { id: 'fuel-runtime', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', title: 'Fuel Runtime', desc: 'Est. run time remaining' },
+      { id: 'fuel-level', icon: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z', title: 'Fuel Tank Conv.', desc: 'Convert %, Liters, Gallons' },
+      { id: 'rpm-freq', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15', title: 'RPM ⇔ Hz', desc: 'Speed, frequency & poles' },
+      { id: 'single-phase', icon: 'M13 10V3L4 14h7v7l9-11h-7z', title: 'Single Phase', desc: 'Amps, Volts, kW, kVA' },
+      { id: 'three-phase', icon: 'M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z', title: 'Three Phase', desc: '3Ø Power calculations' },
+      { id: 'voltage-drop', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6', title: 'Voltage Drop', desc: 'Cable size & distance drop' },
+      { id: 'power-factor', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', title: 'Power Factor', desc: 'Using kW and kVAR' },
+      { id: 'kva-kw', icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4', title: 'kVA ⇔ kW', desc: 'Convert Real/Apparent' },
+      { id: 'fuel-consumption', icon: 'M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z', title: 'Fuel Consumption', desc: 'Est. usage from Load' },
+      { id: 'temperature', icon: 'M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z', title: 'Temperature', desc: 'Celsius ⇔ Fahrenheit' }
     ];
 
+    // --- STATE ---
+    let appState = {
+      unit: 'imperial', // 'metric' or 'imperial'
+      currentForm: null
+    };
+
+    // --- DOM ELEMENTS ---
+    const els = {
+      splash: document.getElementById('splash-screen'),
+      app: document.getElementById('app-container'),
+      menu: document.getElementById('main-menu'),
+      calcArea: document.getElementById('calculation-area'),
+      headerText: document.getElementById('header-text'),
+      themeToggle: document.getElementById('theme-toggle'),
+      unitToggle: document.getElementById('unit-toggle')
+    };
+
     // --- INITIALIZATION ---
-    document.addEventListener('DOMContentLoaded', () => {
-      initTheme();
-      buildAllForms();
-      setupEventListeners();
-    });
+    function init() {
+      renderMenu();
+      setupListeners();
+      setThemeIcon();
+      
+      // Unit Toggle Init
+      appState.unit = els.unitToggle.checked ? 'imperial' : 'metric';
+    }
 
-    function setupEventListeners() {
+    function setupListeners() {
+      // Splash
       document.getElementById('start-btn').addEventListener('click', () => {
-        document.getElementById('splash-screen').classList.add('hidden');
-        const app = document.getElementById('app-container');
-        app.classList.remove('hidden');
-        app.classList.add('slide-in');
+        els.splash.classList.add('hidden');
+        els.app.classList.remove('hidden');
       });
 
-      const unitToggle = document.getElementById('unit-toggle');
-      displayUnit = unitToggle.checked ? 'imperial' : 'metric';
-      unitToggle.addEventListener('change', () => { displayUnit = unitToggle.checked ? 'imperial' : 'metric'; });
-      
-      document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-      
-      document.querySelectorAll('.menu-button').forEach(button => {
-        button.addEventListener('click', () => showForm(button.dataset.calc));
-      });
-    }
-
-    function initTheme() {
-        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        const sunIcon = document.querySelector('.sun-icon');
-        const moonIcon = document.querySelector('.moon-icon');
-        if (savedTheme === 'dark') { moonIcon.style.display = 'block'; sunIcon.style.display = 'none'; } 
-        else { sunIcon.style.display = 'block'; moonIcon.style.display = 'none'; }
-    }
-    function toggleTheme() {
+      // Theme
+      els.themeToggle.addEventListener('click', () => {
         const current = document.documentElement.getAttribute('data-theme');
-        const newTheme = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        initTheme();
-    }
-
-    // --- UI & NAVIGATION ---
-    function showMainMenu() {
-        document.getElementById('main-menu').classList.remove('hidden');
-        const formsContainer = document.getElementById('calculation-forms');
-        formsContainer.classList.add('hidden');
-        if (currentForm) {
-            document.getElementById(`${currentForm}-form`).classList.add('hidden');
-            currentForm = null;
-        }
-        document.getElementById('header-content').querySelector('p').textContent = "Select a Calculation";
-        window.scrollTo(0, 0);
-    }
-
-    function showForm(formId) {
-        if (currentForm) { document.getElementById(`${currentForm}-form`).classList.add('hidden'); }
-        document.getElementById('main-menu').classList.add('hidden');
-        const formsContainer = document.getElementById('calculation-forms');
-        formsContainer.classList.remove('hidden');
-        const formCard = document.getElementById(`${formId}-form`);
-        formCard.classList.remove('hidden');
-        formCard.classList.add('slide-in');
-        document.getElementById('header-content').querySelector('p').textContent = forms.find(f => f.id === formId).title;
-        currentForm = formId;
-        window.scrollTo(0, 0);
-    }
-    
-    // --- FORM & RESULT RENDERING ---
-    function buildAllForms() {
-        const container = document.getElementById('calculation-forms');
-        forms.forEach(form => {
-            const card = document.createElement('div');
-            card.id = `${form.id}-form`;
-            card.className = 'card hidden';
-            card.innerHTML = `
-                <div class="card-header"><h2>${form.title}</h2></div>
-                <div class="card-content">
-                    ${form.content}
-                    <div class="button-group">
-                        <button class="btn btn-secondary" onclick="showMainMenu()">← Back</button>
-                        <button class="btn btn-primary" onclick="calculate('${form.id}')">Calculate</button>
-                    </div>
-                    <div id="${form.id}-result" class="result-panel hidden"></div>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-        
-        // Post-build event listeners for dynamic elements
-        const vdSizeUnitInputs = document.querySelectorAll('input[name="vd-size-unit"]');
-        if (vdSizeUnitInputs.length > 0) {
-            vdSizeUnitInputs.forEach(input => {
-                input.addEventListener('change', (e) => {
-                    document.getElementById('vd-awg-group').classList.toggle('hidden', e.target.value !== 'awg');
-                    document.getElementById('vd-mm2-group').classList.toggle('hidden', e.target.value !== 'mm2');
-                });
-            });
-        }
-        const kkDirInputs = document.querySelectorAll('input[name="kk-dir"]');
-        if(kkDirInputs.length > 0) {
-            kkDirInputs.forEach(input => input.addEventListener('change', e => {
-                document.getElementById('kk-label').textContent = e.target.value === 'kvatokw' ? 'Apparent Power (kVA):' : 'Real Power (kW):';
-            }));
-        }
-         const tempDirInputs = document.querySelectorAll('input[name="temp-dir"]');
-        if(tempDirInputs.length > 0) {
-            tempDirInputs.forEach(input => input.addEventListener('change', e => {
-                document.getElementById('temp-label').textContent = e.target.value === 'ctof' ? 'Temperature in °C:' : 'Temperature in °F:';
-            }));
-        }
-    }
-
-    function showResult(formId, data) {
-      const container = document.getElementById(`${formId}-result`);
-      container.classList.remove('hidden');
-      
-      let textToCopy = `--- ${forms.find(f => f.id === formId).title.toUpperCase()} ---\n`;
-      let resultHTML = '';
-
-      data.forEach(item => {
-        let valueHTML = '';
-        if (typeof item.value === 'object' && item.value !== null) {
-          const primary = displayUnit === 'imperial' ? item.value.imperial : item.value.metric;
-          const secondary = displayUnit === 'imperial' ? item.value.metric : item.value.imperial;
-          valueHTML = `<span class="primary">${primary}</span> <span class="secondary">(${secondary})</span>`;
-          textToCopy += `${item.label}: ${primary} (${secondary})\n`;
-        } else {
-          valueHTML = `<span class="primary">${item.value}</span>`;
-          textToCopy += `${item.label}: ${item.value}\n`;
-        }
-        resultHTML += `<div class="result-item"><span class="result-label">${item.label}</span><span class="result-value">${valueHTML}</span></div>`;
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        setThemeIcon();
       });
-      
-      const loadPercentageItem = data.find(item => item.label === 'Load Percentage');
-      if (loadPercentageItem) {
-          const barContainer = document.createElement('div');
-          barContainer.className = 'percentage-bar-container';
-          const bar = document.createElement('div');
-          const percent = parseFloat(loadPercentageItem.value);
-          bar.className = 'percentage-bar';
-          if(percent > 90) bar.classList.add('danger');
-          else if(percent > 75) bar.classList.add('warning');
-          bar.style.width = `${Math.min(percent, 100)}%`;
-          bar.textContent = `${percent.toFixed(1)}%`;
-          barContainer.appendChild(bar);
-          resultHTML += barContainer.outerHTML;
-      }
-      
-      resultHTML += `<button class="btn btn-copy" onclick="copyToClipboard(this)">Copy Results</button>`;
-      container.innerHTML = resultHTML;
-      container.dataset.copytext = textToCopy.trim();
-    }
-    
-    function copyToClipboard(button) {
-        const textToCopy = button.parentElement.dataset.copytext;
-        const textarea = document.createElement('textarea');
-        textarea.value = textToCopy;
-        textarea.style.position = 'fixed';
-        textarea.style.top = '-9999px';
-        textarea.setAttribute('readonly', '');
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-            document.execCommand('copy');
-            button.textContent = 'Copied!';
-            setTimeout(() => { button.textContent = 'Copy Results'; }, 2000);
-        } catch (err) {
-            console.error('Failed to copy text: ', err);
-            button.textContent = 'Copy Failed';
-            setTimeout(() => { button.textContent = 'Copy Results'; }, 2000);
+
+      // Unit
+      els.unitToggle.addEventListener('change', (e) => {
+        appState.unit = e.target.checked ? 'imperial' : 'metric';
+        // If a calculation is visible, re-calculate to update units
+        if(appState.currentForm) calculate(appState.currentForm);
+      });
+
+      // Global Enter Key
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' && appState.currentForm) {
+            // Prevent Enter from triggering buttons if focus is on them
+            if(e.target.tagName !== 'BUTTON') {
+                calculate(appState.currentForm);
+                // Remove focus to hide keyboard on mobile
+                if(document.activeElement) document.activeElement.blur();
+            }
         }
-        document.body.removeChild(textarea);
+      });
     }
 
-    // --- MASTER CALCULATION ROUTER ---
-    function calculate(formId) {
+    function setThemeIcon() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.querySelector('.icon-sun').style.display = isDark ? 'none' : 'block';
+      document.querySelector('.icon-moon').style.display = isDark ? 'block' : 'none';
+    }
+
+    // --- RENDERING ---
+    function renderMenu() {
+      els.menu.innerHTML = TOOLS.map(t => `
+        <div class="menu-card" onclick="loadTool('${t.id}')">
+          <div class="menu-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="${t.icon}"></path></svg>
+          </div>
+          <div class="menu-text">
+            <h3>${t.title}</h3>
+            <p>${t.desc}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function loadTool(id) {
+      const tool = TOOLS.find(t => t.id === id);
+      appState.currentForm = id;
+      
+      // Update Header
+      els.headerText.innerHTML = `<h1>${tool.title}</h1><p>${tool.desc}</p>`;
+      
+      // Hide Menu, Show Area
+      els.menu.classList.add('hidden');
+      els.calcArea.classList.remove('hidden');
+      
+      // Inject Form
+      els.calcArea.innerHTML = `
+        <div class="calc-card">
+          <div class="card-body">
+            ${getFormHTML(id)}
+            <div class="btn-group">
+              <button class="btn btn-secondary" onclick="goBack()">← Back</button>
+              <button class="btn btn-primary" onclick="calculate('${id}')">Calculate</button>
+            </div>
+            <div id="result-container" class="hidden"></div>
+          </div>
+        </div>
+      `;
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goBack() {
+      appState.currentForm = null;
+      els.calcArea.classList.add('hidden');
+      els.menu.classList.remove('hidden');
+      els.headerText.innerHTML = `<h1>Calculators</h1><p>Select a tool to begin</p>`;
+    }
+
+    function getFormHTML(id) {
+      // Re-using the logic from the original code but cleaning up HTML structure
+      switch(id) {
+        case 'gen-sizing': return `
+          <div class="form-group"><label>Running Load (kW)</label><input type="number" id="i-run" class="form-input" placeholder="e.g. 50"></div>
+          <div class="form-group"><label>Largest Motor Start (kVA)</label><input type="number" id="i-start" class="form-input" placeholder="e.g. 15"></div>
+          <div class="form-group"><label>Power Factor</label><input type="number" id="i-pf" class="form-input" value="0.8" step="0.01"></div>
+          <div class="form-group"><label>Safety Overhead (%)</label><input type="number" id="i-safe" class="form-input" value="25"></div>`;
+        
+        case 'fuel-runtime': return `
+           <div class="form-group"><label>Tank Unit</label><div class="radio-group">
+             <label><input type="radio" name="r-unit" value="gal" checked> Gallons</label>
+             <label><input type="radio" name="r-unit" value="lit"> Liters</label>
+           </div></div>
+           <div class="form-group"><label>Tank Capacity</label><input type="number" id="i-cap" class="form-input"></div>
+           <div class="form-group"><label>Generator Load (kW)</label><input type="number" id="i-load" class="form-input"></div>`;
+
+        case 'fuel-level': return `
+          <div class="form-group"><label>Total Tank Capacity</label><input id="i-tcap" type="number" class="form-input"><div class="radio-group"><label><input type="radio" name="r-tunit" value="gal" checked> Gallons</label><label><input type="radio" name="r-tunit" value="lit"> Liters</label></div></div>
+          <div style="height:1px; background:var(--border); margin:1.5rem 0;"></div>
+          <div class="form-group"><label>Current Level Reading</label><input id="i-curr" type="number" class="form-input"><div class="radio-group"><label><input type="radio" name="r-cunit" value="pct" checked> %</label><label><input type="radio" name="r-cunit" value="gal"> Gal</label><label><input type="radio" name="r-cunit" value="lit"> Lit</label></div></div>`;
+        
+        case 'rpm-freq': return `
+          <div class="form-group"><label>Engine RPM</label><input type="number" id="i-rpm" class="form-input"></div>
+          <div class="form-group"><label>Frequency (Hz)</label><input type="number" id="i-hz" class="form-input"></div>
+          <div class="form-group"><label>Alternator Poles</label><input type="number" id="i-poles" class="form-input" placeholder="e.g. 4"></div>
+          <p style="font-size:0.85rem; color:var(--text-muted);">Enter any 2 values to find the 3rd.</p>`;
+
+        case 'single-phase': return `
+          <div class="form-group"><label>Voltage (V)</label><input type="number" id="i-v" class="form-input" value="240"></div>
+          <div class="form-group"><label>Current (A)</label><input type="number" id="i-a" class="form-input"></div>
+          <div class="form-group"><label>Power Factor</label><input type="number" id="i-pf" class="form-input" value="0.9"></div>
+          <div class="form-group"><label>Rated Power (kW) [Optional]</label><input type="number" id="i-rated" class="form-input" placeholder="For load % calc"></div>`;
+
+        case 'three-phase': return `
+          <div class="form-group"><label>Line Voltage (V)</label><input type="number" id="i-v" class="form-input" value="480"></div>
+          <div class="form-group"><label>Current L1 (A)</label><input type="number" id="i-a1" class="form-input"></div>
+          <div class="form-group"><label>Current L2 (A)</label><input type="number" id="i-a2" class="form-input"></div>
+          <div class="form-group"><label>Current L3 (A)</label><input type="number" id="i-a3" class="form-input"></div>
+          <div class="form-group"><label>Power Factor</label><input type="number" id="i-pf" class="form-input" value="0.8"></div>
+          <div class="form-group"><label>Rated Power (kW) [Optional]</label><input type="number" id="i-rated" class="form-input"></div>`;
+
+        case 'voltage-drop': return `
+          <div class="form-group"><label>System Voltage (V)</label><input type="number" id="i-v" class="form-input" value="480"></div>
+          <div class="form-group"><label>Load Current (A)</label><input type="number" id="i-a" class="form-input"></div>
+          <div class="form-group"><label>One-Way Length</label><input type="number" id="i-len" class="form-input"><div class="radio-group"><label><input type="radio" name="r-lunit" value="ft" checked> Feet</label><label><input type="radio" name="r-lunit" value="m"> Meters</label></div></div>
+          <div class="form-group"><label>Cable Size</label>
+            <select id="i-awg" class="form-select" onchange="toggleCableInput(this)">
+              <option value="awg">Select AWG...</option>
+              ${Object.keys(CONV.AWG_MM2).map(k=>`<option value="${k}">${k} AWG</option>`).join('')}
+              <option value="manual">Enter mm² manually</option>
+            </select>
+            <input type="number" id="i-mm2" class="form-input hidden" placeholder="Enter mm²" style="margin-top:0.5rem">
+          </div>`;
+
+        case 'power-factor': return `
+           <div class="form-group"><label>Real Power (kW)</label><input type="number" id="i-kw" class="form-input"></div>
+           <div class="form-group"><label>Reactive Power (kVAR)</label><input type="number" id="i-kvar" class="form-input"></div>`;
+
+        case 'kva-kw': return `
+           <div class="form-group"><label>Convert Direction</label><div class="radio-group">
+             <label><input type="radio" name="r-dir" value="to_kw" checked onclick="document.getElementById('lbl-pwr').innerText='Apparent Power (kVA)'"> kVA → kW</label>
+             <label><input type="radio" name="r-dir" value="to_kva" onclick="document.getElementById('lbl-pwr').innerText='Real Power (kW)'"> kW → kVA</label>
+           </div></div>
+           <div class="form-group"><label id="lbl-pwr">Apparent Power (kVA)</label><input type="number" id="i-val" class="form-input"></div>
+           <div class="form-group"><label>Power Factor</label><input type="number" id="i-pf" class="form-input" value="0.8"></div>`;
+        
+        case 'fuel-consumption': return `
+           <div class="form-group"><label>Engine Power</label><input type="number" id="i-pwr" class="form-input"><div class="radio-group"><label><input type="radio" name="r-punit" value="kw" checked> kW</label><label><input type="radio" name="r-punit" value="hp"> HP</label></div></div>
+           <div class="form-group"><label>Engine Efficiency (0.3 - 0.45)</label><input type="number" id="i-eff" class="form-input" value="0.35" step="0.01"></div>`;
+
+        case 'temperature': return `
+           <div class="form-group"><div class="radio-group">
+             <label><input type="radio" name="r-dir" value="c2f" checked onclick="document.getElementById('lbl-temp').innerText='Celsius (°C)'"> °C → °F</label>
+             <label><input type="radio" name="r-dir" value="f2c" onclick="document.getElementById('lbl-temp').innerText='Fahrenheit (°F)'"> °F → °C</label>
+           </div></div>
+           <div class="form-group"><label id="lbl-temp">Celsius (°C)</label><input type="number" id="i-temp" class="form-input"></div>`;
+      }
+    }
+
+    // Special handler for Voltage Drop input toggle
+    window.toggleCableInput = function(select) {
+        const mmInput = document.getElementById('i-mm2');
+        if(select.value === 'manual') {
+            mmInput.classList.remove('hidden');
+            mmInput.focus();
+        } else {
+            mmInput.classList.add('hidden');
+        }
+    }
+
+    // --- CALCULATION LOGIC ---
+    function calculate(id) {
+        const container = document.getElementById('result-container');
+        container.innerHTML = '';
+        container.classList.add('hidden');
+        
+        // Helper to get value
+        const getVal = (eid) => {
+            const el = document.getElementById(eid);
+            if(!el) return 0;
+            const val = parseFloat(el.value);
+            if(isNaN(val)) { el.classList.add('error'); setTimeout(()=>el.classList.remove('error'), 500); throw new Error("Invalid Input"); }
+            return val;
+        };
+        const getRad = (name) => document.querySelector(`input[name="${name}"]:checked`).value;
+
         try {
-            let results = [];
-            switch(formId) {
+            let res = [];
+            let percentBar = null;
+
+            switch(id) {
                 case 'gen-sizing': {
-                    const runningKW = parseFloat(document.getElementById('gs-running-load').value);
-                    const startingKVA = parseFloat(document.getElementById('gs-starting-load').value);
-                    const pf = parseFloat(document.getElementById('gs-pf').value);
-                    const overhead = parseFloat(document.getElementById('gs-overhead').value);
-                    const runningKVA = runningKW / pf;
-                    const totalKVA = runningKVA + startingKVA;
-                    const finalKVA = totalKVA * (1 + overhead / 100);
-                    const finalKW = finalKVA * pf;
-                    results = [
-                        { label: 'Running Load', value: { metric: `${runningKW.toFixed(1)} kW`, imperial: `${(runningKW * CONVERSIONS.KW_TO_HP).toFixed(1)} HP` } },
-                        { label: 'Recommended Size', value: { metric: `${finalKVA.toFixed(1)} kVA`, imperial: `${finalKW.toFixed(1)} kW` } }
-                    ];
+                    const run = getVal('i-run');
+                    const start = getVal('i-start');
+                    const pf = getVal('i-pf');
+                    const safe = getVal('i-safe');
+                    const totalKva = (run/pf + start) * (1 + safe/100);
+                    const totalKw = totalKva * pf;
+                    res.push({ l: 'Recommended Sizing', m: `${totalKva.toFixed(1)} kVA`, i: `${totalKw.toFixed(1)} kW` });
+                    res.push({ l: 'Est. Running Load', m: `${run.toFixed(1)} kW`, i: `${(run*CONV.KW_TO_HP).toFixed(1)} HP` });
                     break;
                 }
                 case 'fuel-runtime': {
-                    const capacity = parseFloat(document.getElementById('fr-capacity').value);
-                    const unit = document.querySelector('input[name="fr-unit"]:checked').value;
-                    const loadKW = parseFloat(document.getElementById('fr-load').value);
-                    const consumptionLPH = (loadKW * 0.21) / 0.85; 
-                    const capacityL = unit === 'lit' ? capacity : capacity / CONVERSIONS.L_TO_GAL;
-                    const runtimeHours = capacityL / consumptionLPH;
-                    const days = Math.floor(runtimeHours / 24);
-                    const hours = Math.floor(runtimeHours % 24);
-                    results = [
-                        { label: 'Est. Runtime', value: `${days}d ${hours}h` },
-                        { label: 'Consumption Rate', value: { metric: `${consumptionLPH.toFixed(2)} L/h`, imperial: `${(consumptionLPH * CONVERSIONS.L_TO_GAL).toFixed(2)} gal/h` } }
-                    ];
+                    const cap = getVal('i-cap');
+                    const load = getVal('i-load');
+                    const unit = getRad('r-unit');
+                    
+                    // Logic: Assuming Diesel Gen approx 0.25 L/kWh (roughly 0.21-0.28 depending on load/eff)
+                    // The original code used: (load * 0.21) / 0.85
+                    const lph = (load * 0.25); 
+                    const capL = unit === 'lit' ? cap : cap / CONV.L_TO_GAL;
+                    
+                    if(lph === 0) throw new Error("Load cannot be zero");
+                    
+                    const hours = capL / lph;
+                    const d = Math.floor(hours/24);
+                    const h = Math.floor(hours%24);
+                    
+                    res.push({ l: 'Run Time', m: `${d}d ${h}h`, i: `${hours.toFixed(1)} Total Hours` });
+                    res.push({ l: 'Consumption', m: `${lph.toFixed(1)} L/hr`, i: `${(lph*CONV.L_TO_GAL).toFixed(1)} Gal/hr` });
                     break;
                 }
                 case 'fuel-level': {
-                    const capValue = parseFloat(document.getElementById('fl-capacity').value);
-                    const capUnit = document.querySelector('input[name="fl-cap-unit"]:checked').value;
-                    const currValue = parseFloat(document.getElementById('fl-current').value);
-                    const currUnit = document.querySelector('input[name="fl-curr-unit"]:checked').value;
-                    if(isNaN(capValue) || isNaN(currValue)) { throw new Error("Please enter numeric values for capacity and current level."); }
-                    const tankLiters = capUnit === 'lit' ? capValue : capValue / CONVERSIONS.L_TO_GAL;
-                    const tankGallons = tankLiters * CONVERSIONS.L_TO_GAL;
-                    let currentLiters = 0;
-                    if (currUnit === 'percent') { currentLiters = tankLiters * (currValue / 100); }
-                    else if (currUnit === 'gal') { currentLiters = currValue / CONVERSIONS.L_TO_GAL; }
-                    else { currentLiters = currValue; }
-                    if (currentLiters > tankLiters * 1.001) { throw new Error("Current level cannot be greater than tank capacity."); }
-                    const currentGallons = currentLiters * CONVERSIONS.L_TO_GAL;
-                    const currentPercent = (tankLiters > 0) ? (currentLiters / tankLiters) * 100 : 0;
-                    results = [
-                        { label: 'Total Capacity', value: { metric: `${tankLiters.toFixed(1)} L`, imperial: `${tankGallons.toFixed(1)} gal` }},
-                        { label: 'Current Level', value: { metric: `${currentLiters.toFixed(1)} L`, imperial: `${currentGallons.toFixed(1)} gal` }},
-                        { label: 'Tank Percentage', value: `${currentPercent.toFixed(1)} %` }
-                    ];
+                    const tcap = getVal('i-tcap');
+                    const curr = getVal('i-curr');
+                    const tunit = getRad('r-tunit');
+                    const cunit = getRad('r-cunit');
+                    
+                    const tcapL = tunit === 'lit' ? tcap : tcap / CONV.L_TO_GAL;
+                    let currL = 0;
+                    
+                    if(cunit === 'pct') currL = tcapL * (curr/100);
+                    else if(cunit === 'gal') currL = curr / CONV.L_TO_GAL;
+                    else currL = curr;
+                    
+                    const pct = (currL / tcapL) * 100;
+                    if(pct > 100) throw new Error("Current level exceeds capacity");
+                    
+                    res.push({ l: 'Tank Percentage', m: `${pct.toFixed(1)}%`, i: `${pct.toFixed(1)}%` });
+                    res.push({ l: 'Volume', m: `${currL.toFixed(1)} L`, i: `${(currL*CONV.L_TO_GAL).toFixed(1)} Gal` });
+                    percentBar = pct;
                     break;
                 }
                 case 'rpm-freq': {
-                    const rpm = document.getElementById('rf-rpm').value;
-                    const freq = document.getElementById('rf-freq').value;
-                    const poles = document.getElementById('rf-poles').value;
-                    let resultLabel, resultValue;
-                    if(rpm && freq) { resultValue = (freq * 120) / rpm; resultLabel = 'Calculated Poles'; }
-                    else if (rpm && poles) { resultValue = (rpm * poles) / 120; resultLabel = 'Calculated Hz'; }
-                    else if (freq && poles) { resultValue = (freq * 120) / poles; resultLabel = 'Calculated RPM'; }
-                    results = [{ label: resultLabel, value: resultValue.toFixed(1) }];
+                    const rpmEl = document.getElementById('i-rpm');
+                    const hzEl = document.getElementById('i-hz');
+                    const poleEl = document.getElementById('i-poles');
+                    
+                    const rpm = rpmEl.value ? parseFloat(rpmEl.value) : null;
+                    const hz = hzEl.value ? parseFloat(hzEl.value) : null;
+                    const poles = poleEl.value ? parseFloat(poleEl.value) : null;
+                    
+                    // Formula: RPM = (120 * Hz) / Poles
+                    if(rpm !== null && hz !== null) {
+                         const p = (120 * hz) / rpm;
+                         res.push({ l: 'Calculated Poles', m: Math.round(p), i: Math.round(p) });
+                    } else if (rpm !== null && poles !== null) {
+                         const f = (rpm * poles) / 120;
+                         res.push({ l: 'Frequency', m: `${f.toFixed(1)} Hz`, i: `${f.toFixed(1)} Hz` });
+                    } else if (hz !== null && poles !== null) {
+                         const r = (120 * hz) / poles;
+                         res.push({ l: 'Engine Speed', m: `${r.toFixed(0)} RPM`, i: `${r.toFixed(0)} RPM` });
+                    } else {
+                        throw new Error("Enter exactly 2 values");
+                    }
                     break;
                 }
                 case 'single-phase': {
-                    const v = parseFloat(document.getElementById('sp-voltage').value);
-                    const i = parseFloat(document.getElementById('sp-current').value);
-                    const pf = parseFloat(document.getElementById('sp-pf').value);
-                    const rated = document.getElementById('sp-rated-power').value;
-                    const kw = (v * i * pf) / 1000;
-                    results = [
-                        { label: 'Real Power', value: { metric: `${kw.toFixed(2)} kW`, imperial: `${(kw * CONVERSIONS.KW_TO_HP).toFixed(2)} HP` } },
-                        { label: 'Apparent Power', value: `${(v * i / 1000).toFixed(2)} kVA` }
-                    ];
+                    const v = getVal('i-v');
+                    const a = getVal('i-a');
+                    const pf = getVal('i-pf');
+                    const rated = document.getElementById('i-rated').value;
+                    
+                    const kva = (v * a) / 1000;
+                    const kw = kva * pf;
+                    
+                    res.push({ l: 'Real Power', m: `${kw.toFixed(2)} kW`, i: `${(kw*CONV.KW_TO_HP).toFixed(1)} HP` });
+                    res.push({ l: 'Apparent Power', m: `${kva.toFixed(2)} kVA`, i: `${kva.toFixed(2)} kVA` });
+                    
                     if(rated) {
-                        const load = (kw / parseFloat(rated)) * 100;
-                        results.push({ label: 'Load Percentage', value: `${load.toFixed(1)}%` });
+                        const rKw = parseFloat(rated);
+                        const pct = (kw / rKw) * 100;
+                        res.push({ l: 'Load Percentage', m: `${pct.toFixed(1)}%`, i: `${pct.toFixed(1)}%` });
+                        percentBar = pct;
                     }
                     break;
                 }
                 case 'three-phase': {
-                    const v = parseFloat(document.getElementById('tp-voltage').value);
-                    const i1 = parseFloat(document.getElementById('tp-current1').value);
-                    const i2 = parseFloat(document.getElementById('tp-current2').value);
-                    const i3 = parseFloat(document.getElementById('tp-current3').value);
-                    const pf = parseFloat(document.getElementById('tp-pf').value);
-                    const rated = document.getElementById('tp-rated-power').value;
-                    const avgI = (i1 + i2 + i3) / 3;
-                    const kw = (v * avgI * pf * Math.sqrt(3)) / 1000;
-                    results = [
-                        { label: 'Real Power', value: { metric: `${kw.toFixed(2)} kW`, imperial: `${(kw * CONVERSIONS.KW_TO_HP).toFixed(2)} HP` } },
-                        { label: 'Average Current', value: `${avgI.toFixed(1)} A` }
-                    ];
-                    if(rated) {
-                        const load = (kw / parseFloat(rated)) * 100;
-                        results.push({ label: 'Load Percentage', value: `${load.toFixed(1)}%` });
+                    const v = getVal('i-v');
+                    const a1 = getVal('i-a1');
+                    const a2 = getVal('i-a2');
+                    const a3 = getVal('i-a3');
+                    const pf = getVal('i-pf');
+                    const rated = document.getElementById('i-rated').value;
+                    
+                    const avgA = (a1+a2+a3)/3;
+                    const kva = (v * avgA * Math.sqrt(3)) / 1000;
+                    const kw = kva * pf;
+                    
+                    res.push({ l: 'Total Real Power', m: `${kw.toFixed(2)} kW`, i: `${(kw*CONV.KW_TO_HP).toFixed(1)} HP` });
+                    res.push({ l: 'Total Apparent', m: `${kva.toFixed(2)} kVA`, i: `${kva.toFixed(2)} kVA` });
+                    res.push({ l: 'Avg Current', m: `${avgA.toFixed(1)} A`, i: `${avgA.toFixed(1)} A` });
+                    
+                     if(rated) {
+                        const rKw = parseFloat(rated);
+                        const pct = (kw / rKw) * 100;
+                        res.push({ l: 'Load Percentage', m: `${pct.toFixed(1)}%`, i: `${pct.toFixed(1)}%` });
+                        percentBar = pct;
                     }
                     break;
                 }
                 case 'voltage-drop': {
-                    const v = parseFloat(document.getElementById('vd-voltage').value);
-                    const i = parseFloat(document.getElementById('vd-current').value);
-                    const len = parseFloat(document.getElementById('vd-length').value);
-                    const lenUnit = document.querySelector('input[name="vd-len-unit"]:checked').value;
-                    const sizeUnit = document.querySelector('input[name="vd-size-unit"]:checked').value;
-                    let mm2;
-                    if(sizeUnit === 'awg'){
-                        mm2 = CONVERSIONS.AWG_TO_MM2[document.getElementById('vd-size-awg').value];
-                    } else {
-                        mm2 = parseFloat(document.getElementById('vd-size-mm2').value);
-                    }
-                    const lenFt = lenUnit === 'ft' ? len : len * CONVERSIONS.M_TO_FT;
+                    const v = getVal('i-v');
+                    const a = getVal('i-a');
+                    const len = getVal('i-len');
+                    const lunit = getRad('r-lunit');
+                    const awgSelect = document.getElementById('i-awg').value;
+                    
+                    let mm2 = 0;
+                    if(awgSelect === 'manual') mm2 = getVal('i-mm2');
+                    else if(awgSelect !== 'awg') mm2 = CONV.AWG_MM2[awgSelect];
+                    else throw new Error("Select a cable size");
+                    
+                    const lenFt = lunit === 'ft' ? len : len * CONV.M_TO_FT;
+                    // Formula: Vd = (2 * K * I * L) / CM  (Assuming 1 phase loop for worst case or simplify 3ph)
+                    // Simplified approx: Vd = (2 * 12.9 * I * Ft) / (mm2 * 1973.5)
                     const cmil = mm2 * 1973.5;
-                    const vdVolts = (2 * 12.9 * i * lenFt) / cmil;
-                    const vdPercent = (vdVolts / v) * 100;
-                     results = [
-                        { label: 'Voltage Drop', value: { metric: `${vdVolts.toFixed(1)} V`, imperial: `${vdPercent.toFixed(2)} %` } },
-                        { label: 'Voltage at Load', value: `${(v - vdVolts).toFixed(1)} V` }
-                    ];
-                    break;
-                }
-                case 'kva-kw': {
-                    const dir = document.querySelector('input[name="kk-dir"]:checked').value;
-                    const val = parseFloat(document.getElementById('kk-input').value);
-                    const pf = parseFloat(document.getElementById('kk-pf').value);
-                    if(dir === 'kvatokw') {
-                        const kw = val * pf;
-                        results = [{label: 'Real Power', value: { metric: `${kw.toFixed(2)} kW`, imperial: `${(kw * CONVERSIONS.KW_TO_HP).toFixed(2)} HP`}}];
-                    } else {
-                        results = [{label: 'Apparent Power', value: `${(val / pf).toFixed(2)} kVA`}];
-                    }
+                    const dropV = (2 * 12.9 * a * lenFt) / cmil;
+                    const dropPct = (dropV / v) * 100;
+                    const endV = v - dropV;
+                    
+                    // Fixed logic: Show V and % as separate rows to avoid Metric/Imperial mapping confusion
+                    res.push({ l: 'Voltage Drop', m: `${dropV.toFixed(2)} V`, i: `${dropV.toFixed(2)} V` });
+                    res.push({ l: 'Drop Percentage', m: `${dropPct.toFixed(2)} %`, i: `${dropPct.toFixed(2)} %` });
+                    res.push({ l: 'Voltage at End', m: `${endV.toFixed(1)} V`, i: `${endV.toFixed(1)} V` });
+                    
+                    percentBar = dropPct; // Use bar for drop %
                     break;
                 }
                 case 'power-factor': {
-                    const kw = parseFloat(document.getElementById('pfc-kw').value);
-                    const kvar = parseFloat(document.getElementById('pfc-kvar').value);
-                    const kva = Math.sqrt(kw**2 + kvar**2);
-                    results = [
-                        {label: 'Apparent Power', value: `${kva.toFixed(2)} kVA`},
-                        {label: 'Power Factor', value: `${(kw/kva).toFixed(3)}`}
-                    ];
+                    const kw = getVal('i-kw');
+                    const kvar = getVal('i-kvar');
+                    const kva = Math.sqrt(kw*kw + kvar*kvar);
+                    const pf = kw / kva;
+                    res.push({ l: 'Apparent Power', m: `${kva.toFixed(2)} kVA`, i: `${kva.toFixed(2)} kVA` });
+                    res.push({ l: 'Power Factor', m: pf.toFixed(3), i: pf.toFixed(3) });
+                    break;
+                }
+                case 'kva-kw': {
+                    const dir = getRad('r-dir');
+                    const val = getVal('i-val');
+                    const pf = getVal('i-pf');
+                    if(dir === 'to_kw') {
+                        const kw = val * pf;
+                        res.push({ l: 'Real Power', m: `${kw.toFixed(2)} kW`, i: `${(kw*CONV.KW_TO_HP).toFixed(1)} HP` });
+                    } else {
+                        const kva = val / pf;
+                        res.push({ l: 'Apparent Power', m: `${kva.toFixed(2)} kVA`, i: `${kva.toFixed(2)} kVA` });
+                    }
                     break;
                 }
                 case 'fuel-consumption': {
-                    const pwr = parseFloat(document.getElementById('fc-power').value);
-                    const eff = parseFloat(document.getElementById('fc-efficiency').value);
-                    const unit = document.querySelector('input[name="fc-unit"]:checked').value;
-                    const pwrKw = unit === 'kw' ? pwr : pwr * 0.7457;
-                    const lph = (pwrKw / eff) / 10;
-                    results = [{label: 'Consumption', value: {metric: `${lph.toFixed(2)} L/h`, imperial: `${(lph * CONVERSIONS.L_TO_GAL).toFixed(2)} gal/h`}}];
+                    const pwr = getVal('i-pwr');
+                    const punit = getRad('r-punit');
+                    const eff = getVal('i-eff');
+                    
+                    const kw = punit === 'kw' ? pwr : pwr * 0.7457;
+                    // Standard approx: kW / (eff * 10 kWh/L)
+                    const lph = kw / (eff * 10);
+                    
+                    res.push({ l: 'Est. Consumption', m: `${lph.toFixed(1)} L/hr`, i: `${(lph*CONV.L_TO_GAL).toFixed(1)} Gal/hr` });
                     break;
                 }
                 case 'temperature': {
-                    const dir = document.querySelector('input[name="temp-dir"]:checked').value;
-                    const temp = parseFloat(document.getElementById('temp-input').value);
-                    if(dir === 'ctof'){
-                        results = [{label: 'Fahrenheit', value: `${(temp * 9/5 + 32).toFixed(1)} °F`}];
+                    const dir = getRad('r-dir');
+                    const t = getVal('i-temp');
+                    if(dir === 'c2f') {
+                        res.push({ l: 'Result', m: `${(t*1.8+32).toFixed(1)} °F`, i: `${(t*1.8+32).toFixed(1)} °F` });
                     } else {
-                        results = [{label: 'Celsius', value: `${((temp-32) * 5/9).toFixed(1)} °C`}];
+                        res.push({ l: 'Result', m: `${((t-32)/1.8).toFixed(1)} °C`, i: `${((t-32)/1.8).toFixed(1)} °C` });
                     }
                     break;
                 }
             }
-            showResult(formId, results);
+            
+            // RENDER RESULTS
+            let html = `<h4 style="margin-bottom:1rem; color:var(--text-muted); font-size:0.8rem; text-transform:uppercase; letter-spacing:1px;">Results</h4>`;
+            
+            res.forEach(item => {
+                const mainVal = appState.unit === 'metric' ? item.m : item.i;
+                const subVal = appState.unit === 'metric' ? item.i : item.m;
+                html += `
+                <div class="result-row">
+                    <span class="r-label">${item.l}</span>
+                    <div class="r-value">
+                        <span class="r-main">${mainVal}</span>
+                        ${mainVal !== subVal ? `<span class="r-sub">${subVal}</span>` : ''}
+                    </div>
+                </div>`;
+            });
+
+            if(percentBar !== null) {
+                let colorClass = '';
+                if(id === 'voltage-drop') {
+                    // Reverse logic for VD: Low is good, High is bad
+                    if(percentBar > 5) colorClass = 'danger';
+                    else if(percentBar > 3) colorClass = 'warning';
+                } else {
+                    // Standard logic: High load is bad
+                    if(percentBar > 90) colorClass = 'danger';
+                    else if(percentBar > 75) colorClass = 'warning';
+                }
+                
+                const width = Math.min(percentBar, 100);
+                html += `
+                <div class="bar-bg">
+                    <div class="bar-fill ${colorClass}" style="width:${width}%">${percentBar.toFixed(1)}%</div>
+                </div>`;
+            }
+
+            container.innerHTML = html;
+            container.classList.remove('hidden');
+
         } catch(e) {
-            alert("Please check your inputs. " + (e.message || "An error occurred."));
+            // Shake button on error
+            const btn = document.querySelector('.btn-primary');
+            btn.style.animation = 'shake 0.4s';
+            setTimeout(() => btn.style.animation = '', 400);
         }
     }
+
+    // Run Init
+    init();
+
 </script>
 </body>
 </html>
