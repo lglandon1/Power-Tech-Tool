@@ -2,6 +2,29 @@
 
 A comprehensive web-based utility designed for electrical and mechanical engineers working with international power standards. This tool provides essential calculations and conversions between Kuwait and US units, making it an indispensable resource for professionals in the power engineering field.
 
+## :rocket: Whats New
+Summary of Changes:
+
+Bug Fixes:
+
+Falsy Value Logic: Fixed an issue in the rpm-freq calculator where entering "0" could be interpreted as an empty field because 0 is falsy in JavaScript. Changed checks to verify if the string is not empty.
+
+Voltage Drop Display: The original code forced "Volts" into the Metric slot and "Percentage" into the Imperial slot. This caused confusion when toggling units (e.g., selecting Imperial would show "%" as the main value and "Volts" as the secondary). I separated these into distinct result rows for clarity.
+
+Usability Improvements:
+
+"Enter" Key Support: You can now press "Enter" inside any input field to trigger the calculation immediately.
+
+Input Validation: Added visual feedback (red borders) to fields that are required but left empty or invalid.
+
+Responsive Layout: Improved the spacing on mobile devices and polished the grid layout for the main menu.
+
+Visual/Layout Polish:
+
+Modern Palette: Refined the color scheme for better contrast and a more modern "app-like" feel in both light and dark modes.
+
+Result Highlighting: The results panel is now distinct from the form, using a "card within a card" design to make data stand out.
+
 ## 📱 Live Demo
 
 **[Try Power Tech Tool Now](https://lglandon1.github.io/Power-Tech-Tool/)**
@@ -102,4 +125,5 @@ If you encounter any issues or have suggestions for improvement:
 
 <p align="center">
   <i>Developed for engineers and technicians working across international power standards</i>
+
 </p>
