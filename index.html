@@ -451,6 +451,39 @@
                     break;
                 }
                 case 'fuel-level': {
+    const tcapInput = document.getElementById('i-tcap').value;
+    const curr = getVal('i-curr');
+    const tunit = getRad('r-tunit');
+    const cunit = getRad('r-cunit');
+    
+    // Convert current reading to Liters for internal math
+    let currL = 0;
+    // We need tcap for % calc, but if it's empty, we handle it gracefully
+    const tcapVal = tcapInput ? parseFloat(tcapInput) : null;
+    const tcapL = tcapVal ? (tunit === 'lit' ? tcapVal : tcapVal / CONV.L_TO_GAL) : null;
+
+    if(cunit === 'pct') {
+        if(!tcapL) throw new Error("Need Total Capacity for %");
+        currL = tcapL * (curr/100);
+    } else if(cunit === 'gal') {
+        currL = curr / CONV.L_TO_GAL;
+    } else {
+        currL = curr;
+    }
+    
+    // Output volume conversion (Always shown)
+    res.push({ l: 'Current Volume', m: `${currL.toFixed(1)} L`, i: `${(currL * CONV.L_TO_GAL).toFixed(1)} Gal` });
+
+    // Only output Capacity and % if tcap was provided
+    if(tcapL) {
+        res.push({ l: 'Tank Capacity', m: `${tcapL.toFixed(1)} L`, i: `${(tcapL * CONV.L_TO_GAL).toFixed(1)} Gal` });
+        const pct = (currL / tcapL) * 100;
+        res.push({ l: 'Tank Percentage', m: `${pct.toFixed(1)}%`, i: `${pct.toFixed(1)}%` });
+        if(pct <= 105) percentBar = pct; // Only show bar if within reasonable range
+    }
+    
+    break;
+}
                     const tcap = getVal('i-tcap');
                     const curr = getVal('i-curr');
                     const tunit = getRad('r-tunit');
@@ -473,7 +506,6 @@
                     
                     percentBar = pct;
                     break;
-                }
                 case 'rpm-freq': {
                     const rpm = document.getElementById('i-rpm').value ? parseFloat(document.getElementById('i-rpm').value) : null;
                     const hz = document.getElementById('i-hz').value ? parseFloat(document.getElementById('i-hz').value) : null;
