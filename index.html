@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="description" content="Professional electrical and mechanical conversion calculator.">
   <script>
-    // Prevent FOUC (Flash of Unstyled Content)
     (function () {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const savedTheme = localStorage.getItem('theme');
@@ -18,13 +17,12 @@
   
   <style>
     :root {
-      /* Base Variables - Light Mode */
-      --primary: #0284c7;        /* Modern Blue */
+      --primary: #0284c7;
       --primary-hover: #0369a1;
-      --secondary: #0f766e;      /* Teal */
-      --accent: #ef4444;         /* Red */
-      --warning: #f59e0b;        /* Amber */
-      --success: #10b981;        /* Emerald */
+      --secondary: #0f766e;
+      --accent: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
       
       --bg-body: #f1f5f9;
       --bg-card: #ffffff;
@@ -44,42 +42,34 @@
     }
 
     [data-theme="dark"] {
-      /* Dark Mode Overrides */
       --primary: #38bdf8;
       --primary-hover: #0ea5e9;
       --secondary: #2dd4bf;
-      
       --bg-body: #0f172a;
       --bg-card: #1e293b;
       --bg-input: #334155;
       --bg-hover: #334155;
-      
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --border: #334155;
-      
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3);
     }
 
-    /* --- Reset & Base --- */
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); line-height: 1.5; min-height: 100vh; transition: background 0.3s ease, color 0.3s ease; }
     button, input, select { font-family: inherit; }
     
     .container { max-width: 640px; margin: 0 auto; padding: 1rem; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* --- Splash Screen --- */
     .splash-screen { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 1.5rem; animation: fadeIn 0.5s ease-out; }
     .splash-screen img { width: 120px; height: 120px; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.1)); }
     .splash-screen h1 { font-size: 2.25rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .splash-screen p { color: var(--text-muted); font-size: 1.1rem; }
 
-    /* --- Header --- */
     .app-header { margin-bottom: 2rem; }
     .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
     
-    /* Toggle Switch */
     .toggle-wrapper { display: flex; align-items: center; gap: 0.75rem; background: var(--bg-card); padding: 0.35rem 0.75rem; border-radius: 99px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
     .toggle-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; }
     .switch { position: relative; width: 44px; height: 24px; }
@@ -89,7 +79,6 @@
     input:checked + .slider { background-color: var(--secondary); }
     input:checked + .slider:before { transform: translateX(20px); }
 
-    /* Theme Button */
     .theme-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow-sm); }
     .theme-btn:hover { color: var(--primary); transform: rotate(15deg); border-color: var(--primary); }
     .theme-btn svg { width: 22px; height: 22px; }
@@ -98,7 +87,6 @@
     .header-text h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
     .header-text p { color: var(--text-muted); font-size: 0.95rem; }
 
-    /* --- Grid Menu --- */
     .grid-menu { display: grid; grid-template-columns: 1fr; gap: 1rem; }
     @media (min-width: 600px) { .grid-menu { grid-template-columns: 1fr 1fr; } }
 
@@ -112,7 +100,6 @@
     .menu-text h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.15rem; }
     .menu-text p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.3; }
 
-    /* --- Calculation Forms --- */
     .calc-card { background: var(--bg-card); border-radius: var(--radius); box-shadow: var(--shadow-lg); border: 1px solid var(--border); overflow: hidden; animation: slideUp 0.3s ease-out; }
     .card-body { padding: 1.5rem; }
     
@@ -126,7 +113,6 @@
     .radio-group label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 400; margin: 0; }
     .radio-group input[type="radio"] { width: 1.2em; height: 1.2em; accent-color: var(--primary); cursor: pointer; }
 
-    /* --- Buttons --- */
     .btn-group { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; margin-top: 2rem; }
     .btn { padding: 0.85rem; border: none; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
     .btn:active { transform: scale(0.98); }
@@ -136,11 +122,7 @@
     
     .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
     .btn-secondary:hover { background: var(--bg-hover); color: var(--text-main); border-color: var(--text-muted); }
-    
-    .btn-copy { width: 100%; margin-top: 1.25rem; background: var(--secondary); color: white; font-size: 0.9rem; padding: 0.6rem; }
-    .btn-copy:hover { opacity: 0.9; }
 
-    /* --- Results --- */
     .result-panel { margin-top: 2rem; background: var(--bg-hover); border-radius: var(--radius-sm); padding: 1.25rem; border: 1px solid var(--border); }
     .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
     .result-row:last-child { border-bottom: none; }
@@ -149,13 +131,11 @@
     .r-main { font-weight: 700; font-size: 1.1rem; color: var(--text-main); display: block; }
     .r-sub { font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 0.1rem; }
 
-    /* --- Bar Graph --- */
     .bar-bg { width: 100%; height: 24px; background: var(--border); border-radius: 99px; margin-top: 1rem; overflow: hidden; position: relative; }
     .bar-fill { height: 100%; background: var(--success); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 700; transition: width 0.5s ease; width: 0%; white-space: nowrap; }
     .bar-fill.warning { background: var(--warning); }
     .bar-fill.danger { background: var(--accent); }
 
-    /* --- Utilities --- */
     .hidden { display: none !important; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -199,17 +179,13 @@
         </div>
       </header>
 
-      <div id="main-menu" class="grid-menu">
-        </div>
-
-      <div id="calculation-area" class="hidden">
-        </div>
+      <div id="main-menu" class="grid-menu"></div>
+      <div id="calculation-area" class="hidden"></div>
 
     </div>
   </div>
 
 <script>
-    // --- CONSTANTS ---
     const CONV = {
         L_TO_GAL: 0.264172,
         M_TO_FT: 3.28084,
@@ -231,13 +207,11 @@
       { id: 'temperature', icon: 'M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z', title: 'Temperature', desc: 'Celsius ⇔ Fahrenheit' }
     ];
 
-    // --- STATE ---
     let appState = {
-      unit: 'imperial', // 'metric' or 'imperial'
+      unit: 'imperial',
       currentForm: null
     };
 
-    // --- DOM ELEMENTS ---
     const els = {
       splash: document.getElementById('splash-screen'),
       app: document.getElementById('app-container'),
@@ -248,24 +222,19 @@
       unitToggle: document.getElementById('unit-toggle')
     };
 
-    // --- INITIALIZATION ---
     function init() {
       renderMenu();
       setupListeners();
       setThemeIcon();
-      
-      // Unit Toggle Init
       appState.unit = els.unitToggle.checked ? 'imperial' : 'metric';
     }
 
     function setupListeners() {
-      // Splash
       document.getElementById('start-btn').addEventListener('click', () => {
         els.splash.classList.add('hidden');
         els.app.classList.remove('hidden');
       });
 
-      // Theme
       els.themeToggle.addEventListener('click', () => {
         const current = document.documentElement.getAttribute('data-theme');
         const next = current === 'dark' ? 'light' : 'dark';
@@ -274,20 +243,15 @@
         setThemeIcon();
       });
 
-      // Unit
       els.unitToggle.addEventListener('change', (e) => {
         appState.unit = e.target.checked ? 'imperial' : 'metric';
-        // If a calculation is visible, re-calculate to update units
         if(appState.currentForm) calculate(appState.currentForm);
       });
 
-      // Global Enter Key
       document.addEventListener('keydown', (e) => {
         if(e.key === 'Enter' && appState.currentForm) {
-            // Prevent Enter from triggering buttons if focus is on them
             if(e.target.tagName !== 'BUTTON') {
                 calculate(appState.currentForm);
-                // Remove focus to hide keyboard on mobile
                 if(document.activeElement) document.activeElement.blur();
             }
         }
@@ -300,7 +264,6 @@
       document.querySelector('.icon-moon').style.display = isDark ? 'block' : 'none';
     }
 
-    // --- RENDERING ---
     function renderMenu() {
       els.menu.innerHTML = TOOLS.map(t => `
         <div class="menu-card" onclick="loadTool('${t.id}')">
@@ -318,15 +281,9 @@
     function loadTool(id) {
       const tool = TOOLS.find(t => t.id === id);
       appState.currentForm = id;
-      
-      // Update Header
       els.headerText.innerHTML = `<h1>${tool.title}</h1><p>${tool.desc}</p>`;
-      
-      // Hide Menu, Show Area
       els.menu.classList.add('hidden');
       els.calcArea.classList.remove('hidden');
-      
-      // Inject Form
       els.calcArea.innerHTML = `
         <div class="calc-card">
           <div class="card-body">
@@ -339,7 +296,6 @@
           </div>
         </div>
       `;
-      
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -351,7 +307,6 @@
     }
 
     function getFormHTML(id) {
-      // Re-using the logic from the original code but cleaning up HTML structure
       switch(id) {
         case 'gen-sizing': return `
           <div class="form-group"><label>Running Load (kW)</label><input type="number" id="i-run" class="form-input" placeholder="e.g. 50"></div>
@@ -368,9 +323,20 @@
            <div class="form-group"><label>Generator Load (kW)</label><input type="number" id="i-load" class="form-input"></div>`;
 
         case 'fuel-level': return `
-          <div class="form-group"><label>Total Tank Capacity</label><input id="i-tcap" type="number" class="form-input"><div class="radio-group"><label><input type="radio" name="r-tunit" value="gal" checked> Gallons</label><label><input type="radio" name="r-tunit" value="lit"> Liters</label></div></div>
+          <div class="form-group"><label>Total Tank Capacity</label><input id="i-tcap" type="number" class="form-input">
+            <div class="radio-group">
+                <label><input type="radio" name="r-tunit" value="gal"> Gallons</label>
+                <label><input type="radio" name="r-tunit" value="lit" checked> Liters</label>
+            </div>
+          </div>
           <div style="height:1px; background:var(--border); margin:1.5rem 0;"></div>
-          <div class="form-group"><label>Current Level Reading</label><input id="i-curr" type="number" class="form-input"><div class="radio-group"><label><input type="radio" name="r-cunit" value="pct" checked> %</label><label><input type="radio" name="r-cunit" value="gal"> Gal</label><label><input type="radio" name="r-cunit" value="lit"> Lit</label></div></div>`;
+          <div class="form-group"><label>Current Level Reading</label><input id="i-curr" type="number" class="form-input">
+            <div class="radio-group">
+                <label><input type="radio" name="r-cunit" value="pct"> %</label>
+                <label><input type="radio" name="r-cunit" value="gal"> Gal</label>
+                <label><input type="radio" name="r-cunit" value="lit" checked> Lit</label>
+            </div>
+          </div>`;
         
         case 'rpm-freq': return `
           <div class="form-group"><label>Engine RPM</label><input type="number" id="i-rpm" class="form-input"></div>
@@ -430,7 +396,6 @@
       }
     }
 
-    // Special handler for Voltage Drop input toggle
     window.toggleCableInput = function(select) {
         const mmInput = document.getElementById('i-mm2');
         if(select.value === 'manual') {
@@ -441,13 +406,11 @@
         }
     }
 
-    // --- CALCULATION LOGIC ---
     function calculate(id) {
         const container = document.getElementById('result-container');
         container.innerHTML = '';
         container.classList.add('hidden');
         
-        // Helper to get value
         const getVal = (eid) => {
             const el = document.getElementById(eid);
             if(!el) return 0;
@@ -477,18 +440,12 @@
                     const cap = getVal('i-cap');
                     const load = getVal('i-load');
                     const unit = getRad('r-unit');
-                    
-                    // Logic: Assuming Diesel Gen approx 0.25 L/kWh (roughly 0.21-0.28 depending on load/eff)
-                    // The original code used: (load * 0.21) / 0.85
                     const lph = (load * 0.25); 
                     const capL = unit === 'lit' ? cap : cap / CONV.L_TO_GAL;
-                    
                     if(lph === 0) throw new Error("Load cannot be zero");
-                    
                     const hours = capL / lph;
                     const d = Math.floor(hours/24);
                     const h = Math.floor(hours%24);
-                    
                     res.push({ l: 'Run Time', m: `${d}d ${h}h`, i: `${hours.toFixed(1)} Total Hours` });
                     res.push({ l: 'Consumption', m: `${lph.toFixed(1)} L/hr`, i: `${(lph*CONV.L_TO_GAL).toFixed(1)} Gal/hr` });
                     break;
@@ -500,30 +457,27 @@
                     const cunit = getRad('r-cunit');
                     
                     const tcapL = tunit === 'lit' ? tcap : tcap / CONV.L_TO_GAL;
-                    let currL = 0;
+                    const tcapGal = tunit === 'gal' ? tcap : tcap * CONV.L_TO_GAL;
                     
+                    let currL = 0;
                     if(cunit === 'pct') currL = tcapL * (curr/100);
                     else if(cunit === 'gal') currL = curr / CONV.L_TO_GAL;
                     else currL = curr;
                     
                     const pct = (currL / tcapL) * 100;
-                    if(pct > 100) throw new Error("Current level exceeds capacity");
+                    if(pct > 105) throw new Error("Exceeds Capacity");
                     
+                    res.push({ l: 'Tank Capacity', m: `${tcapL.toFixed(1)} L`, i: `${(tcapL * CONV.L_TO_GAL).toFixed(1)} Gal` });
+                    res.push({ l: 'Current Volume', m: `${currL.toFixed(1)} L`, i: `${(currL * CONV.L_TO_GAL).toFixed(1)} Gal` });
                     res.push({ l: 'Tank Percentage', m: `${pct.toFixed(1)}%`, i: `${pct.toFixed(1)}%` });
-                    res.push({ l: 'Volume', m: `${currL.toFixed(1)} L`, i: `${(currL*CONV.L_TO_GAL).toFixed(1)} Gal` });
+                    
                     percentBar = pct;
                     break;
                 }
                 case 'rpm-freq': {
-                    const rpmEl = document.getElementById('i-rpm');
-                    const hzEl = document.getElementById('i-hz');
-                    const poleEl = document.getElementById('i-poles');
-                    
-                    const rpm = rpmEl.value ? parseFloat(rpmEl.value) : null;
-                    const hz = hzEl.value ? parseFloat(hzEl.value) : null;
-                    const poles = poleEl.value ? parseFloat(poleEl.value) : null;
-                    
-                    // Formula: RPM = (120 * Hz) / Poles
+                    const rpm = document.getElementById('i-rpm').value ? parseFloat(document.getElementById('i-rpm').value) : null;
+                    const hz = document.getElementById('i-hz').value ? parseFloat(document.getElementById('i-hz').value) : null;
+                    const poles = document.getElementById('i-poles').value ? parseFloat(document.getElementById('i-poles').value) : null;
                     if(rpm !== null && hz !== null) {
                          const p = (120 * hz) / rpm;
                          res.push({ l: 'Calculated Poles', m: Math.round(p), i: Math.round(p) });
@@ -533,96 +487,55 @@
                     } else if (hz !== null && poles !== null) {
                          const r = (120 * hz) / poles;
                          res.push({ l: 'Engine Speed', m: `${r.toFixed(0)} RPM`, i: `${r.toFixed(0)} RPM` });
-                    } else {
-                        throw new Error("Enter exactly 2 values");
-                    }
+                    } else throw new Error("Enter 2 values");
                     break;
                 }
                 case 'single-phase': {
-                    const v = getVal('i-v');
-                    const a = getVal('i-a');
-                    const pf = getVal('i-pf');
-                    const rated = document.getElementById('i-rated').value;
-                    
-                    const kva = (v * a) / 1000;
-                    const kw = kva * pf;
-                    
+                    const v = getVal('i-v'), a = getVal('i-a'), pf = getVal('i-pf'), rated = document.getElementById('i-rated').value;
+                    const kva = (v * a) / 1000, kw = kva * pf;
                     res.push({ l: 'Real Power', m: `${kw.toFixed(2)} kW`, i: `${(kw*CONV.KW_TO_HP).toFixed(1)} HP` });
                     res.push({ l: 'Apparent Power', m: `${kva.toFixed(2)} kVA`, i: `${kva.toFixed(2)} kVA` });
-                    
                     if(rated) {
-                        const rKw = parseFloat(rated);
-                        const pct = (kw / rKw) * 100;
+                        const pct = (kw / parseFloat(rated)) * 100;
                         res.push({ l: 'Load Percentage', m: `${pct.toFixed(1)}%`, i: `${pct.toFixed(1)}%` });
                         percentBar = pct;
                     }
                     break;
                 }
                 case 'three-phase': {
-                    const v = getVal('i-v');
-                    const a1 = getVal('i-a1');
-                    const a2 = getVal('i-a2');
-                    const a3 = getVal('i-a3');
-                    const pf = getVal('i-pf');
-                    const rated = document.getElementById('i-rated').value;
-                    
-                    const avgA = (a1+a2+a3)/3;
-                    const kva = (v * avgA * Math.sqrt(3)) / 1000;
-                    const kw = kva * pf;
-                    
+                    const v = getVal('i-v'), a1 = getVal('i-a1'), a2 = getVal('i-a2'), a3 = getVal('i-a3'), pf = getVal('i-pf'), rated = document.getElementById('i-rated').value;
+                    const avgA = (a1+a2+a3)/3, kva = (v * avgA * Math.sqrt(3)) / 1000, kw = kva * pf;
                     res.push({ l: 'Total Real Power', m: `${kw.toFixed(2)} kW`, i: `${(kw*CONV.KW_TO_HP).toFixed(1)} HP` });
                     res.push({ l: 'Total Apparent', m: `${kva.toFixed(2)} kVA`, i: `${kva.toFixed(2)} kVA` });
                     res.push({ l: 'Avg Current', m: `${avgA.toFixed(1)} A`, i: `${avgA.toFixed(1)} A` });
-                    
                      if(rated) {
-                        const rKw = parseFloat(rated);
-                        const pct = (kw / rKw) * 100;
+                        const pct = (kw / parseFloat(rated)) * 100;
                         res.push({ l: 'Load Percentage', m: `${pct.toFixed(1)}%`, i: `${pct.toFixed(1)}%` });
                         percentBar = pct;
                     }
                     break;
                 }
                 case 'voltage-drop': {
-                    const v = getVal('i-v');
-                    const a = getVal('i-a');
-                    const len = getVal('i-len');
-                    const lunit = getRad('r-lunit');
-                    const awgSelect = document.getElementById('i-awg').value;
-                    
-                    let mm2 = 0;
-                    if(awgSelect === 'manual') mm2 = getVal('i-mm2');
-                    else if(awgSelect !== 'awg') mm2 = CONV.AWG_MM2[awgSelect];
-                    else throw new Error("Select a cable size");
-                    
+                    const v = getVal('i-v'), a = getVal('i-a'), len = getVal('i-len'), lunit = getRad('r-lunit'), awgSelect = document.getElementById('i-awg').value;
+                    let mm2 = awgSelect === 'manual' ? getVal('i-mm2') : CONV.AWG_MM2[awgSelect];
+                    if(!mm2) throw new Error("Select size");
                     const lenFt = lunit === 'ft' ? len : len * CONV.M_TO_FT;
-                    // Formula: Vd = (2 * K * I * L) / CM  (Assuming 1 phase loop for worst case or simplify 3ph)
-                    // Simplified approx: Vd = (2 * 12.9 * I * Ft) / (mm2 * 1973.5)
-                    const cmil = mm2 * 1973.5;
-                    const dropV = (2 * 12.9 * a * lenFt) / cmil;
+                    const dropV = (2 * 12.9 * a * lenFt) / (mm2 * 1973.5);
                     const dropPct = (dropV / v) * 100;
-                    const endV = v - dropV;
-                    
-                    // Fixed logic: Show V and % as separate rows to avoid Metric/Imperial mapping confusion
                     res.push({ l: 'Voltage Drop', m: `${dropV.toFixed(2)} V`, i: `${dropV.toFixed(2)} V` });
                     res.push({ l: 'Drop Percentage', m: `${dropPct.toFixed(2)} %`, i: `${dropPct.toFixed(2)} %` });
-                    res.push({ l: 'Voltage at End', m: `${endV.toFixed(1)} V`, i: `${endV.toFixed(1)} V` });
-                    
-                    percentBar = dropPct; // Use bar for drop %
+                    res.push({ l: 'Voltage at End', m: `${(v - dropV).toFixed(1)} V`, i: `${(v - dropV).toFixed(1)} V` });
+                    percentBar = dropPct;
                     break;
                 }
                 case 'power-factor': {
-                    const kw = getVal('i-kw');
-                    const kvar = getVal('i-kvar');
-                    const kva = Math.sqrt(kw*kw + kvar*kvar);
-                    const pf = kw / kva;
+                    const kw = getVal('i-kw'), kvar = getVal('i-kvar'), kva = Math.sqrt(kw*kw + kvar*kvar), pf = kw / kva;
                     res.push({ l: 'Apparent Power', m: `${kva.toFixed(2)} kVA`, i: `${kva.toFixed(2)} kVA` });
                     res.push({ l: 'Power Factor', m: pf.toFixed(3), i: pf.toFixed(3) });
                     break;
                 }
                 case 'kva-kw': {
-                    const dir = getRad('r-dir');
-                    const val = getVal('i-val');
-                    const pf = getVal('i-pf');
+                    const dir = getRad('r-dir'), val = getVal('i-val'), pf = getVal('i-pf');
                     if(dir === 'to_kw') {
                         const kw = val * pf;
                         res.push({ l: 'Real Power', m: `${kw.toFixed(2)} kW`, i: `${(kw*CONV.KW_TO_HP).toFixed(1)} HP` });
@@ -633,76 +546,49 @@
                     break;
                 }
                 case 'fuel-consumption': {
-                    const pwr = getVal('i-pwr');
-                    const punit = getRad('r-punit');
-                    const eff = getVal('i-eff');
-                    
+                    const pwr = getVal('i-pwr'), punit = getRad('r-punit'), eff = getVal('i-eff');
                     const kw = punit === 'kw' ? pwr : pwr * 0.7457;
-                    // Standard approx: kW / (eff * 10 kWh/L)
                     const lph = kw / (eff * 10);
-                    
                     res.push({ l: 'Est. Consumption', m: `${lph.toFixed(1)} L/hr`, i: `${(lph*CONV.L_TO_GAL).toFixed(1)} Gal/hr` });
                     break;
                 }
                 case 'temperature': {
-                    const dir = getRad('r-dir');
-                    const t = getVal('i-temp');
-                    if(dir === 'c2f') {
-                        res.push({ l: 'Result', m: `${(t*1.8+32).toFixed(1)} °F`, i: `${(t*1.8+32).toFixed(1)} °F` });
-                    } else {
-                        res.push({ l: 'Result', m: `${((t-32)/1.8).toFixed(1)} °C`, i: `${((t-32)/1.8).toFixed(1)} °C` });
-                    }
+                    const dir = getRad('r-dir'), t = getVal('i-temp');
+                    if(dir === 'c2f') res.push({ l: 'Result', m: `${(t*1.8+32).toFixed(1)} °F`, i: `${(t*1.8+32).toFixed(1)} °F` });
+                    else res.push({ l: 'Result', m: `${((t-32)/1.8).toFixed(1)} °C`, i: `${((t-32)/1.8).toFixed(1)} °C` });
                     break;
                 }
             }
             
-            // RENDER RESULTS
             let html = `<h4 style="margin-bottom:1rem; color:var(--text-muted); font-size:0.8rem; text-transform:uppercase; letter-spacing:1px;">Results</h4>`;
-            
             res.forEach(item => {
                 const mainVal = appState.unit === 'metric' ? item.m : item.i;
                 const subVal = appState.unit === 'metric' ? item.i : item.m;
-                html += `
-                <div class="result-row">
-                    <span class="r-label">${item.l}</span>
-                    <div class="r-value">
-                        <span class="r-main">${mainVal}</span>
-                        ${mainVal !== subVal ? `<span class="r-sub">${subVal}</span>` : ''}
-                    </div>
-                </div>`;
+                html += `<div class="result-row"><span class="r-label">${item.l}</span><div class="r-value"><span class="r-main">${mainVal}</span>${mainVal !== subVal ? `<span class="r-sub">${subVal}</span>` : ''}</div></div>`;
             });
 
             if(percentBar !== null) {
                 let colorClass = '';
                 if(id === 'voltage-drop') {
-                    // Reverse logic for VD: Low is good, High is bad
                     if(percentBar > 5) colorClass = 'danger';
                     else if(percentBar > 3) colorClass = 'warning';
                 } else {
-                    // Standard logic: High load is bad
                     if(percentBar > 90) colorClass = 'danger';
                     else if(percentBar > 75) colorClass = 'warning';
                 }
-                
-                const width = Math.min(percentBar, 100);
-                html += `
-                <div class="bar-bg">
-                    <div class="bar-fill ${colorClass}" style="width:${width}%">${percentBar.toFixed(1)}%</div>
-                </div>`;
+                html += `<div class="bar-bg"><div class="bar-fill ${colorClass}" style="width:${Math.min(percentBar, 100)}%">${percentBar.toFixed(1)}%</div></div>`;
             }
 
             container.innerHTML = html;
             container.classList.remove('hidden');
 
         } catch(e) {
-            // Shake button on error
             const btn = document.querySelector('.btn-primary');
             btn.style.animation = 'shake 0.4s';
             setTimeout(() => btn.style.animation = '', 400);
         }
     }
 
-    // Run Init
     init();
 
 </script>
